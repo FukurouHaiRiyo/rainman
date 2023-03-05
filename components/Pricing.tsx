@@ -84,16 +84,9 @@ export default function Pricing() {
               </ListItem>
             </List>
             <Box w="80%" pt={7}>
-              <Router>
-                  <Link to='/team'>
-                        <Button w="full" colorScheme="red" variant="outline">
-                              Basic plan
-                        </Button>
-                  </Link>
-                  {/* <Routes>
-                        <Route path='/team' element={<Team/>}/>
-                  </Routes> */}
-              </Router>
+              <Button w="full" colorScheme="red" variant="outline">
+                Basic plan
+              </Button>
             </Box>
           </VStack>
         </PriceWrapper>
