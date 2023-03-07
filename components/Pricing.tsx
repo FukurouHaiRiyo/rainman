@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Team from './Team';
+import {Team} from './Team';
 
 function PriceWrapper({ children }: { children: ReactNode }) {
   return (

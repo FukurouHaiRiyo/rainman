@@ -1,7 +1,7 @@
 import React from 'react'
 
-export default function Team(){
+export const Team = () => {
   return (
-    <>aaa</>
+    <div>aaa</div>
   )
 };

@@ -4,37 +4,22 @@ import {
   Flex,
   HStack,
   IconButton,
-  Button,
   Menu,
+  Button,
   MenuButton,
   useDisclosure,
   useColorModeValue,
   useBreakpointValue,
   Stack,
-  Link,
 } from '@chakra-ui/react';
+
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import logo from '@/assets/logo.png';
 import icon from '@/assets/icon.png';
 import Image from 'next/image';
-import Pricing from '@/components/Pricing';
 
-const Links = ['Echipa', 'DespreNoi', 'Contact']
-
-// const NavLink = ({ children }: { children: ReactNode }) => (
-//   <Link
-//     px={2}
-//     py={1}
-//     rounded={'md'}
-//     _hover={{
-//       textDecoration: 'none',
-//       bg: useColorModeValue('gray.200', 'gray.700'),
-//     }}
-//     href={'#'}
-//     >
-//     {children}
-//   </Link>
-// );
+import { BrowserRouter as Router, Link, NavLink, Route, Routes } from 'react-router-dom';
+import {Team} from './Team';
 
 export const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -87,9 +72,7 @@ export const Navbar = () => {
                   as={'nav'}
                   spacing={4}
                   display={{ base: 'none', md: 'flex' }}>
-                  <Link href='/DespreNoi'>Despre noi</Link>
-                  <Link href='/Contact'>Contact</Link>
-                  <Link href='/Pricing'>Preturi</Link>
+                  <a href='/team'>Team</a>
                 </HStack>
               </HStack>
             </Menu>
@@ -100,19 +83,11 @@ export const Navbar = () => {
       {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              <Link href='/DespreNoi'>Despre noi</Link>
-              <Link href='/Contact'>Contact</Link>
-              <Link href='/Preturi'>Preturi</Link>
+              <a href='team'>Team</a>
             </Stack>
           </Box>
         ) : null}
     </Box>
   </>
-  );
-}
-
-export const DespreNoi = () => {
-  return (
-    <div>aaa</div>
   );
 }
