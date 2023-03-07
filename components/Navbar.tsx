@@ -72,7 +72,7 @@ export const Navbar = () => {
                   as={'nav'}
                   spacing={4}
                   display={{ base: 'none', md: 'flex' }}>
-                  <a href='/team'>Team</a>
+                  
                 </HStack>
               </HStack>
             </Menu>
@@ -83,7 +83,7 @@ export const Navbar = () => {
       {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              <a href='team'>Team</a>
+              
             </Stack>
           </Box>
         ) : null}
