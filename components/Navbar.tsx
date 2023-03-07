@@ -17,7 +17,7 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import logo from '@/assets/logo.png';
 import icon from '@/assets/icon.png';
 import Image from 'next/image';
-import { NavLink } from 'react-router-dom';
+import Pricing from '@/components/Pricing';
 
 const Links = ['Echipa', 'DespreNoi', 'Contact']
 
@@ -89,7 +89,7 @@ export const Navbar = () => {
                   display={{ base: 'none', md: 'flex' }}>
                   <Link href='/DespreNoi'>Despre noi</Link>
                   <Link href='/Contact'>Contact</Link>
-                  <Link href='/Preturi'>Preturi</Link>
+                  <Link href='/Pricing'>Preturi</Link>
                 </HStack>
               </HStack>
             </Menu>
