@@ -19,7 +19,6 @@ import icon from '@/assets/icon.png';
 import Image from 'next/image';
 
 import { BrowserRouter as Router, Link, NavLink, Route, Routes } from 'react-router-dom';
-import {Team} from './Team';
 
 export const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -72,7 +71,53 @@ export const Navbar = () => {
                   as={'nav'}
                   spacing={4}
                   display={{ base: 'none', md: 'flex' }}>
-                  
+                    <Stack
+                      flex={{ base: 1, md: 0 }}
+                      justify={'flex-left'}
+                      direction={'row'}
+                      spacing={6}>
+                    <Button
+                        as={'a'}
+                        display={{ base: 'none', md: 'inline-flex' }}
+                        fontSize={'sm'}
+                        fontWeight={600}
+                        color={'white'}
+                        bg={'pink.400'}
+                        href={'/Team'}
+                        _hover={{
+                          bg: 'pink.300',
+                        }}> 
+                      Team
+                    </Button>
+                    
+                    <Button
+                        as={'a'}
+                        display={{ base: 'none', md: 'inline-flex' }}
+                        fontSize={'sm'}
+                        fontWeight={600}
+                        color={'white'}
+                        bg={'pink.400'}
+                        href={'/About'}
+                        _hover={{
+                          bg: 'pink.300',
+                        }}> 
+                      About
+                    </Button>
+
+                    <Button
+                        as={'a'}
+                        display={{ base: 'none', md: 'inline-flex' }}
+                        fontSize={'sm'}
+                        fontWeight={600}
+                        color={'white'}
+                        bg={'pink.400'}
+                        href={'/Contact'}
+                        _hover={{
+                          bg: 'pink.300',
+                        }}> 
+                      Contact
+                    </Button>
+                  </Stack>
                 </HStack>
               </HStack>
             </Menu>
@@ -82,8 +127,32 @@ export const Navbar = () => {
 
       {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
-            <Stack as={'nav'} spacing={4}>
-              
+            <Stack
+              flex={{ base: 1, md: 0 }}
+              justify={'flex-left'}
+              direction={'row'}
+              spacing={6}>
+              <Button
+                as={'a'}
+                fontSize={'sm'}
+                fontWeight={400}
+                variant={'link'}
+                href={'#'}>
+                Sign In
+              </Button>
+              <Button
+                  as={'a'}
+                  display={{ base: 'none', md: 'inline-flex' }}
+                  fontSize={'sm'}
+                  fontWeight={600}
+                  color={'white'}
+                  bg={'pink.400'}
+                  href={'#'}
+                  _hover={{
+                    bg: 'pink.300',
+                  }}>
+                Sign Up
+              </Button>
             </Stack>
           </Box>
         ) : null}
