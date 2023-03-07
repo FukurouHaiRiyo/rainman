@@ -9,14 +9,34 @@ import {
   MenuButton,
   useDisclosure,
   useColorModeValue,
+  useBreakpointValue,
+  Stack,
+  Link,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import logo from '@/assets/logo.png';
 import icon from '@/assets/icon.png';
 import Image from 'next/image';
+import { NavLink } from 'react-router-dom';
 
+const Links = ['Echipa', 'DespreNoi', 'Contact']
 
-export default function Navbar() {
+// const NavLink = ({ children }: { children: ReactNode }) => (
+//   <Link
+//     px={2}
+//     py={1}
+//     rounded={'md'}
+//     _hover={{
+//       textDecoration: 'none',
+//       bg: useColorModeValue('gray.200', 'gray.700'),
+//     }}
+//     href={'#'}
+//     >
+//     {children}
+//   </Link>
+// );
+
+export const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -46,7 +66,6 @@ export default function Navbar() {
               spacing={2}
               display={{ base: 'none', md: 'flex' }}>
             </HStack>
-
             <Flex alignItems={'center'}>
             <Menu>
               <MenuButton
@@ -62,11 +81,38 @@ export default function Navbar() {
                   alt='logo'
                 />
               </MenuButton>
+
+              <HStack spacing={8} alignItems={'center'}>
+                <HStack
+                  as={'nav'}
+                  spacing={4}
+                  display={{ base: 'none', md: 'flex' }}>
+                  <Link href='/DespreNoi'>Despre noi</Link>
+                  <Link href='/Contact'>Contact</Link>
+                  <Link href='/Preturi'>Preturi</Link>
+                </HStack>
+              </HStack>
             </Menu>
           </Flex>
         </HStack>
       </Flex>
+
+      {isOpen ? (
+          <Box pb={4} display={{ md: 'none' }}>
+            <Stack as={'nav'} spacing={4}>
+              <Link href='/DespreNoi'>Despre noi</Link>
+              <Link href='/Contact'>Contact</Link>
+              <Link href='/Preturi'>Preturi</Link>
+            </Stack>
+          </Box>
+        ) : null}
     </Box>
   </>
+  );
+}
+
+export const DespreNoi = () => {
+  return (
+    <div>aaa</div>
   );
 }
