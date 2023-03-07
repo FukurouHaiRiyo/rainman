@@ -137,21 +137,26 @@ export const Navbar = () => {
                 fontSize={'sm'}
                 fontWeight={400}
                 variant={'link'}
-                href={'#'}>
-                Sign In
+                href={'/Team'}>
+                Team
               </Button>
+
               <Button
-                  as={'a'}
-                  display={{ base: 'none', md: 'inline-flex' }}
-                  fontSize={'sm'}
-                  fontWeight={600}
-                  color={'white'}
-                  bg={'pink.400'}
-                  href={'#'}
-                  _hover={{
-                    bg: 'pink.300',
-                  }}>
-                Sign Up
+                as={'a'}
+                fontSize={'sm'}
+                fontWeight={400}
+                variant={'link'}
+                href={'/About'}>
+                About
+              </Button>
+
+              <Button
+                as={'a'}
+                fontSize={'sm'}
+                fontWeight={400}
+                variant={'link'}
+                href={'/Contact'}>
+                Contact
               </Button>
             </Stack>
           </Box>
