@@ -48,7 +48,9 @@ export const Navbar = () => {
                 variant={'link'}
                 cursor={'pointer'}
                 alignItems={'left'}
-                minW={0}>
+                minW={0}
+                bg={useColorModeValue('gray.100', 'gray.900')}
+                >
                 <Image
                   width={150}
                   height={200}
