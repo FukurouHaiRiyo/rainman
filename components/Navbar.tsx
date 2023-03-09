@@ -15,7 +15,6 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import final_icon from '@/assets/final_icon.png';
 import Image from 'next/image';
 
-import { BrowserRouter as Router, Link, NavLink, Route, Routes } from 'react-router-dom';
 
 export const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
