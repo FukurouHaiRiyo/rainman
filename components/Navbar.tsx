@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import {
   Box,
   Flex,
@@ -9,12 +8,10 @@ import {
   MenuButton,
   useDisclosure,
   useColorModeValue,
-  useBreakpointValue,
   Stack,
 } from '@chakra-ui/react';
 
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import logo from '@/assets/logo1.png';
 import final_icon from '@/assets/final_icon.png';
 import Image from 'next/image';
 
