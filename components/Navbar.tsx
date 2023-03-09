@@ -14,8 +14,8 @@ import {
 } from '@chakra-ui/react';
 
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import logo from '@/assets/logo.png';
-import icon from '@/assets/icon.png';
+import logo from '@/assets/logo1.png';
+import final_icon from '@/assets/final_icon.png';
 import Image from 'next/image';
 
 import { BrowserRouter as Router, Link, NavLink, Route, Routes } from 'react-router-dom';
@@ -35,16 +35,6 @@ export const Navbar = () => {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={3} alignItems={'center'}>
-            <Box bg={useColorModeValue('gray.100', 'gray.900')}>
-              <Box>
-                <Image
-                  width={90}
-                  height={90}
-                  src={logo}
-                  alt='logo'
-                />
-              </Box>
-            </Box>
             <HStack
               as={'nav'}
               spacing={2}
@@ -57,11 +47,12 @@ export const Navbar = () => {
                 rounded={'full'}
                 variant={'link'}
                 cursor={'pointer'}
+                alignItems={'left'}
                 minW={0}>
                 <Image
-                  width={70}
-                  height={70}
-                  src={icon}
+                  width={150}
+                  height={200}
+                  src={final_icon}
                   alt='logo'
                 />
               </MenuButton>
