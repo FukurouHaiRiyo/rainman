@@ -50,6 +50,7 @@ export const Navbar = () => {
                 alignItems={'left'}
                 minW={0}
                 bg={useColorModeValue('gray.100', 'gray.900')}
+
                 >
                 <Image
                   width={150}
