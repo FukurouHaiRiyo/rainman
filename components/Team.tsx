@@ -43,7 +43,7 @@ const Team = () => {
           color={useColorModeValue('gray.700', 'gray.400')}
           px={3}>
           Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-          Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.{' '}
+          Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s.{' '}
         </Text>
 
         <Stack align={'center'} justify={'center'} direction={'row'} mt={6}>
