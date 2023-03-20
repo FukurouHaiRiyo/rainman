@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useState} from 'react';
 
 import {Box, IconButton, useBreakpointValue, Stack, Heading, Text, Container} from '@chakra-ui/react';
