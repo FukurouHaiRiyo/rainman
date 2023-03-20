@@ -26,7 +26,7 @@ const Contact = () => {
                   <Heading>Contact</Heading>
 
                   <Text mt={{sm:3, md:3, lg:5}} color='gray.500'>
-                    Fill up the form to get in contact with us
+                    Get in contact with us
                   </Text>
 
                   <Box py={{base: 5, sm: 5, md: 8, lg: 10}}>
@@ -44,10 +44,83 @@ const Contact = () => {
                       </Button>
 
                       <Button
-                        
+                        size='md'
+                        height='48px'
+                        width='500px'
+                        color='#ADD8E6'
+                        _hover={{border:'2px solid #1C6FEB'}}
+                        leftIcon={<MdEmail color='#1970F1' size='20px'/>}
                       >
-
+                        andrei-stefanpanait@rainmanconsulting.ro
                       </Button>
+
+                      <Button
+                        size='md'
+                        height='48px'
+                        width='400px'
+                        color='#ADD8E6'
+                        _hover={{border:'2px solid #1C6FEB'}}
+                        leftIcon={<MdEmail color='#1970F1' size='20px'/>}
+                      >
+                        adrianpanait@rainmanconsulting.ro
+                      </Button>
+
+                      <Button
+                        size='md'
+                        height='48px'
+                        width='200px'
+                        variant='ghost'
+                        color='#DCE2FF'
+                        _hover={{border: '2px solid #1C6FEB'}}
+                        leftIcon={<MdLocationOn color='#1970F1'/>}
+                      >
+                        Ploiesti, Romania
+                      </Button>
+                    </VStack>
+                  </Box>
+
+                  <HStack
+                    mt={{lg: 10, md:10}}
+                    spacing={5}
+                    alignItems='flex-start'
+                  >
+                    <IconButton
+                      aria-label='facebook'
+                      variant='ghost'
+                      size='lg'
+                      isRound={true}
+                      _hover={{bg:'#0D74FF'}}
+                      icon={<MdFacebook size='28px'/>}
+                    />
+
+                    <IconButton
+                      aria-label='github'
+                      variant='ghost'
+                      size='lg'
+                      isRound={true}
+                      _hover={{bg:'#0D74FF'}}
+                      icon={<BsGithub size='28px'/>}
+                    />
+
+                    <IconButton
+                      aria-label="discord"
+                      variant="ghost"
+                      size="lg"
+                      isRound={true}
+                      _hover={{ bg: '#0D74FF' }}
+                      icon={<BsDiscord size="28px" />}
+                    />
+                  </HStack>
+                </Box>
+              </WrapItem>
+
+              <WrapItem>
+                <Box bg='white' borderRadius='lg'>
+                  <Box m={8} color='#0B0E3F'>
+                    <VStack spacing={5}>
+                      <FormControl id='name'>
+                        <FormLabel>AA RainMan Consulting</FormLabel>
+                      </FormControl>
                     </VStack>
                   </Box>
                 </Box>
