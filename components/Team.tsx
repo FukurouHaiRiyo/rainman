@@ -36,7 +36,7 @@ const Team = () => {
           Nume prenume
         </Heading>
         <Text fontWeight={600} color={'gray.500'} mb={4}>
-          @nume_prenume(pt chat/intalniri RainMan-Meetings)
+          @nume_prenume
         </Text>
         <Text
           textAlign={'center'}

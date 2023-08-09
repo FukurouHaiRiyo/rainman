@@ -40,14 +40,14 @@ const Contact = () => {
                         _hover={{border: '2px solid #1C6FEB'}}
                         leftIcon={<MdPhone color='#1970F1' size='20px'/>}
                       >
-                        Numar de tel
+                        Numar de telefon
                       </Button>
 
                       <Button
                         size='md'
                         height='48px'
                         width='500px'
-                        color='#ADD8E6'
+                        color='#000000'
                         _hover={{border:'2px solid #1C6FEB'}}
                         leftIcon={<MdEmail color='#1970F1' size='20px'/>}
                       >
@@ -58,7 +58,7 @@ const Contact = () => {
                         size='md'
                         height='48px'
                         width='400px'
-                        color='#ADD8E6'
+                        color='#000000'
                         _hover={{border:'2px solid #1C6FEB'}}
                         leftIcon={<MdEmail color='#1970F1' size='20px'/>}
                       >
