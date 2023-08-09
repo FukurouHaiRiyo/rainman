@@ -97,9 +97,20 @@ const About = () => {
         {cards.map((card, index)=>(
           <Box
             key={index}
-            
+            height={'6xl'}
+            position='relative'
+            backgroundPosition='center'
+            backgroundRepeat='no-repeat'
+            backgroundSize='cover'
+            backgroundImage={`url(${card.image})`}
           >
-
+            <Container size='container.lg' height='600px' position='relative'>
+              <Stack spacing={6} w={'full'} maxW={'lg'} position='absolute' top = '50%' transform="translate(0, -50%)">
+                <Heading>
+                    
+                </Heading>
+              </Stack>
+            </Container>
           </Box>
         ))}
       </Slider>
