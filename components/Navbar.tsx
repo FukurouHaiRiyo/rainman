@@ -1,157 +1,69 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  IconButton,
-  Menu,
-  Button,
-  MenuButton,
-  useDisclosure,
-  useColorModeValue,
-  Stack,
-} from '@chakra-ui/react';
+'use client'
 
-import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import final_icon from '@/assets/final_icon.png';
-import Image from 'next/image';
+import React, { useState } from 'react';
+import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 
+const navigation = [
+  { name: 'Home', href: '/' },
+  { name: 'Solutii IT', href: '/Services' },
+  { name: 'Solutii Software WMS', href: '/Wms' },
+  { name: 'Company', href: '#' },
+  { name: 'About us', href: '/AboutUs' },
+]
 
-export const Navbar = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const Navbar = () => {
+  const [nav, setNav] = useState(false);
+
+  const handleNav = () => {
+    setNav(!nav);
+  };
 
   return (
-    <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
-        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <IconButton
-            size={'md'}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            aria-label={'Open Menu'}
-            display={{ md: 'none' }}
-            onClick={isOpen ? onClose : onOpen}
-          />
-          <HStack spacing={3} alignItems={'center'}>
-            <HStack
-              as={'nav'}
-              spacing={2}
-              display={{ base: 'none', md: 'flex' }}>
-            </HStack>
-            <Flex alignItems={'center'}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded={'full'}
-                variant={'link'}
-                cursor={'pointer'}
-                alignItems={'left'}
-                minW={0}
-                bg={useColorModeValue('gray.100', 'gray.900')}
+    <nav className='flex items-center justify-between p6 lg:px8'>
+      <div className='flex lg:flex-1'>
+        <a href='#' className='-m-1.5 p-1.5'>
+          <span>
+            Rainman
+          </span>
 
-                >
-                <Image
-                  width={150}
-                  height={200}
-                  src={final_icon}
-                  alt='logo'
-                />
-              </MenuButton>
+          <img className='h-8 w-auto' src='' alt='image' />
+        </a>
+      </div>
 
-              <HStack spacing={8} alignItems={'center'}>
-                <HStack
-                  as={'nav'}
-                  spacing={4}
-                  display={{ base: 'none', md: 'flex' }}>
-                    <Stack
-                      flex={{ base: 1, md: 0 }}
-                      justify={'flex-left'}
-                      direction={'row'}
-                      spacing={6}>
-                    <Button
-                        as={'a'}
-                        display={{ base: 'none', md: 'inline-flex' }}
-                        fontSize={'sm'}
-                        fontWeight={600}
-                        color={'white'}
-                        bg={'pink.400'}
-                        href={'/Team'}
-                        _hover={{
-                          bg: 'pink.300',
-                        }}> 
-                      Team
-                    </Button>
-                    
-                    <Button
-                        as={'a'}
-                        display={{ base: 'none', md: 'inline-flex' }}
-                        fontSize={'sm'}
-                        fontWeight={600}
-                        color={'white'}
-                        bg={'pink.400'}
-                        href={'/About'}
-                        _hover={{
-                          bg: 'pink.300',
-                        }}> 
-                      About
-                    </Button>
+      <div onClick={handleNav} className='block md:hidden'>
+        {nav ? <AiOutlineClose size={20} /> : <AiOutlineMenu size={20} />}
+      </div>
 
-                    <Button
-                        as={'a'}
-                        display={{ base: 'none', md: 'inline-flex' }}
-                        fontSize={'sm'}
-                        fontWeight={600}
-                        color={'white'}
-                        bg={'pink.400'}
-                        href={'/Contact'}
-                        _hover={{
-                          bg: 'pink.300',
-                        }}> 
-                      Contact
-                    </Button>
-                  </Stack>
-                </HStack>
-              </HStack>
-            </Menu>
-          </Flex>
-        </HStack>
-      </Flex>
+      {/* Mobile Navigation Menu */}
+      <ul
+        className={
+          nav
+            ? 'fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#ffffff] ease-in-out duration-500'
+            : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'
+        }
+      >
+        {/* Mobile Navigation Items */}
+        {navigation.map(item => (
+            <li
+              key={item.name}
+              className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-white cursor-pointer border-gray-600'
+            >
+              <a href={item.href}>{item.name}</a>
+            </li>
+          ))}
+      </ul>
 
-      {isOpen ? (
-          <Box pb={4} display={{ md: 'none' }}>
-            <Stack
-              flex={{ base: 1, md: 0 }}
-              justify={'flex-left'}
-              direction={'row'}
-              spacing={6}>
-              <Button
-                as={'a'}
-                fontSize={'sm'}
-                fontWeight={400}
-                variant={'link'}
-                href={'/Team'}>
-                Team
-              </Button>
-
-              <Button
-                as={'a'}
-                fontSize={'sm'}
-                fontWeight={400}
-                variant={'link'}
-                href={'/About'}>
-                About
-              </Button>
-
-              <Button
-                as={'a'}
-                fontSize={'sm'}
-                fontWeight={400}
-                variant={'link'}
-                href={'/Contact'}>
-                Contact
-              </Button>
-            </Stack>
-          </Box>
-        ) : null}
-    </Box>
-  </>
-  );
+      <div className='hidden lg:flex lg:gap-x-12'>
+        {
+          navigation.map((item) => (
+            <a key={item.name} href={item.href} className='text-sm font-semibold leading-6 text-gray-900'>
+              {item.name}
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+  )
 }
+
+export default Navbar;
