@@ -6,12 +6,6 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import Navbar from '@/components/Navbar';
 import ContactUs from './Contact/page';
 
-const navigation = [
-  {name: 'Solutii IT', href: '/Services'},
-  {name: 'About us', href: '/AboutUs'},
-  {name: 'Solutii Software WMS', href: '/Wms'},
-  {name: 'Company', href: '#'},
-]
 
 const Home = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
