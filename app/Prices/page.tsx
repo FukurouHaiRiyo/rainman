@@ -4,23 +4,19 @@ import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 
 const Prices = () => {
-
     const [selectedOption, setSelectedOption] = useState('Basic');
-    const [animate, setAnimate] = useState(false);
 
     const handleOptionChange = (option: any) => {
         if (option !== selectedOption) {
-            setAnimate(true);
             setTimeout(() => {
                 setSelectedOption(option);
-                setAnimate(false);
             }, 30);
         }
     }
 
     return (
         <div className='relative isolate px-6 pt-1 lg:px-18'>
-            <Navbar/>
+            <Navbar />
             <div className='absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80' aria-hidden='true'>
                 <div
                     className='relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]'
@@ -74,7 +70,7 @@ const Prices = () => {
                                             </p>
                                         </div>
 
-                                        <br/>
+                                        <br />
 
                                         <div className='h-24 w-24 mx-auto -mt-12 shadow-xl rounded-full bg-gray-700 text-white border-[3px] flex flex-col items-center justify-center border-white'>
                                             <h3 className='text-2xl'>
@@ -106,14 +102,14 @@ const Prices = () => {
                                                 </li>
                                             </ul>
 
-                                            <button type='button' className='w-full mt-8 px-5 py-2.5 text-sm text-white bg-gray-700 hover:bg-gray-800 rounded-full'> 
-                                                Get started 
+                                            <button type='button' className='w-full mt-8 px-5 py-2.5 text-sm text-white bg-gray-700 hover:bg-gray-800 rounded-full'>
+                                                Get started
                                             </button>
                                         </div>
                                     </div>
 
                                     <div className='shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 relative'>
-                                       <div className='h-32 bg-blue-600 text-center p-4'>
+                                        <div className='h-32 bg-blue-600 text-center p-4'>
                                             Data Analytics
                                             <p className='text-xs text-white'> 14 days delivery time </p>
                                         </div>
@@ -155,9 +151,9 @@ const Prices = () => {
                                             <h3 className='text-xl text-white mb-1'> Mobile app development </h3>
                                             <p className='text-xs text-white'> 14 days delivery time </p>
                                         </div>
-                                        
-                                        <br/>
-                                        
+
+                                        <br />
+
                                         <div className='h-24 w-24 mx-auto -mt-12 shadow-xl rounded-full bg-pink-700 text-white border-[3px] flex flex-col items-center justify-center border-white'>
                                             <h3 className='text-2xl'> $50 </h3>
                                         </div>
@@ -179,7 +175,7 @@ const Prices = () => {
                                                 </li>
                                             </ul>
 
-                                            <button type='button' className='w-full mt-8 px-5 py-2.5 text-sm text-white bg-pink-700 hover:bg-pink-800 rounded-full'> 
+                                            <button type='button' className='w-full mt-8 px-5 py-2.5 text-sm text-white bg-pink-700 hover:bg-pink-800 rounded-full'>
                                                 Get started
                                             </button>
                                         </div>
@@ -199,7 +195,7 @@ const Prices = () => {
                                             </p>
                                         </div>
 
-                                        <br/>
+                                        <br />
 
                                         <div className='h-24 w-24 mx-auto -mt-12 shadow-xl rounded-full bg-gray-700 text-white border-[3px] flex flex-col items-center justify-center border-white'>
                                             <h3 className='text-2xl'>
@@ -250,7 +246,7 @@ const Prices = () => {
                                     </div>
 
                                     <div className='shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 relative'>
-                                       <div className='h-32 bg-blue-600 text-center p-4'>
+                                        <div className='h-32 bg-blue-600 text-center p-4'>
                                             Data Analytics
                                             <p className='text-xs text-white'> 21 days delivery time </p>
                                         </div>
@@ -306,9 +302,9 @@ const Prices = () => {
                                             <h3 className='text-xl text-white mb-1'> Mobile app development </h3>
                                             <p className='text-xs text-white'> 21 days delivery time </p>
                                         </div>
-                                        
-                                        <br/>
-                                        
+
+                                        <br />
+
                                         <div className='h-24 w-24 mx-auto -mt-12 shadow-xl rounded-full bg-pink-700 text-white border-[3px] flex flex-col items-center justify-center border-white'>
                                             <h3 className='text-2xl'> $60 </h3>
                                         </div>
@@ -351,7 +347,7 @@ const Prices = () => {
                                                 </li>
                                             </ul>
 
-                                            <button type='button' className='w-full mt-8 px-5 py-2.5 text-sm text-white bg-pink-700 hover:bg-pink-800 rounded-full'> 
+                                            <button type='button' className='w-full mt-8 px-5 py-2.5 text-sm text-white bg-pink-700 hover:bg-pink-800 rounded-full'>
                                                 Get started
                                             </button>
                                         </div>
@@ -371,7 +367,7 @@ const Prices = () => {
                                             </p>
                                         </div>
 
-                                        <br/>
+                                        <br />
 
                                         <div className='h-24 w-24 mx-auto -mt-12 shadow-xl rounded-full bg-gray-700 text-white border-[3px] flex flex-col items-center justify-center border-white'>
                                             <h3 className='text-2xl'>
@@ -443,7 +439,7 @@ const Prices = () => {
                                     </div>
 
                                     <div className='shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 relative'>
-                                    <div className='h-32 bg-blue-600 text-center p-4'>
+                                        <div className='h-32 bg-blue-600 text-center p-4'>
                                             Data Analytics
                                             <p className='text-xs text-white'> 30 days delivery time </p>
                                         </div>
@@ -506,9 +502,9 @@ const Prices = () => {
                                             <h3 className='text-xl text-white mb-1'> Mobile app development </h3>
                                             <p className='text-xs text-white'> 30 days delivery time </p>
                                         </div>
-                                        
-                                        <br/>
-                                        
+
+                                        <br />
+
                                         <div className='h-24 w-24 mx-auto -mt-12 shadow-xl rounded-full bg-pink-700 text-white border-[3px] flex flex-col items-center justify-center border-white'>
                                             <h3 className='text-2xl'> $80 </h3>
                                         </div>
@@ -554,7 +550,7 @@ const Prices = () => {
                                                     <svg xmlns='http://www.w3.org/2000/svg' width='17' className='mr-3 bg-green-500 fill-white rounded-full p-[3px]' viewBox='0 0 24 24'>
                                                         <path d='M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z' data-original='#000000' />
                                                     </svg>
-                                                    Support included 
+                                                    Support included
                                                 </li>
 
                                                 <li className='flex items-center text-sm text-gray-500'>
@@ -565,7 +561,7 @@ const Prices = () => {
                                                 </li>
                                             </ul>
 
-                                            <button type='button' className='w-full mt-8 px-5 py-2.5 text-sm text-white bg-pink-700 hover:bg-pink-800 rounded-full'> 
+                                            <button type='button' className='w-full mt-8 px-5 py-2.5 text-sm text-white bg-pink-700 hover:bg-pink-800 rounded-full'>
                                                 Get started
                                             </button>
                                         </div>
@@ -577,7 +573,7 @@ const Prices = () => {
                 </div>
             </div>
 
-            
+
 
             <div className='absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]' aria-hidden='true'>
                 <div
@@ -622,14 +618,14 @@ const Prices = () => {
                                 <svg xmlns='http://www.w3.org/2000/svg' width='17' className='mr-3 bg-green-500 fill-white rounded-full p-[3px]' viewBox='0 0 24 24'>
                                     <path d='M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z' data-original='#000000' />
                                 </svg>
-                                Walkthrough for different apps/issues 
+                                Walkthrough for different apps/issues
                             </li>
 
                             <li className='flex items-center text-sm text-gray-500'>
                                 <svg xmlns='http://www.w3.org/2000/svg' width='17' className='mr-3 bg-green-500 fill-white rounded-full p-[3px]' viewBox='0 0 24 24'>
                                     <path d='M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z' data-original='#000000' />
                                 </svg>
-                                How to use different common apps 
+                                How to use different common apps
                             </li>
 
                             <li className='flex items-center text-sm text-gray-500'>
@@ -643,7 +639,7 @@ const Prices = () => {
                                 <svg xmlns='http://www.w3.org/2000/svg' width='17' className='mr-3 bg-green-500 fill-white rounded-full p-[3px]' viewBox='0 0 24 24'>
                                     <path d='M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z' data-original='#000000' />
                                 </svg>
-                                PC assembly 
+                                PC assembly
                             </li>
                         </ul>
 
