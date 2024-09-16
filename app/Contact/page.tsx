@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { MouseEventHandler, useState } from 'react';
 
 const ContactUs = () => {
   const [firstName, setFirstName] = useState('');
@@ -11,12 +11,10 @@ const ContactUs = () => {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(firstName, lastName, emailAddress, phoneNumber, subject, message);
-
-    
-  }
+  };
 
   return (
     <div className='grid md:grid-cols-2 items-center overflow-hidden shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-3xl max-w-6xl mx-auto bg-white my-6 font-[sans-serif]'>
@@ -25,7 +23,7 @@ const ContactUs = () => {
 
         <p className='text-sm text-gray-700 mt-4 leading-relaxed'> Completati formularul pentru a stabili o intalnire cu unul dintre specialistii nostri. Veti fi contactat in cel mai scurt timp posibil.</p>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className='space-y-4 mt-8'>
             <input type='text' id='firstName' name='firstName' value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First name' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
             <input type='text' id='lastName' name='lastName' value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last name' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
@@ -36,7 +34,7 @@ const ContactUs = () => {
             <textarea id='message' name='message' value={message} onChange={e => setMessage(e.target.value)} placeholder='Write message' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none'></textarea>
           </div>
 
-          <button type='submit' onClick={handleSubmit} className='mt-8 flex items-center justify-center text-sm w-full rounded-md px-6 py-3 tracking-wide text-gray-800 bg-yellow-400 hover:bg-yellow-500'>
+          <button type='submit' className='mt-8 flex items-center justify-center text-sm w-full rounded-md px-6 py-3 tracking-wide text-gray-800 bg-yellow-400 hover:bg-yellow-500'>
             <svg xmlns='http://www.w3.org/2000/svg' width='16px' fill='currentColor' className='mr-2' viewBox='0 0 548.244 548.244'>
               <path fillRule='evenodd' d='M392.19 156.054 211.268 281.667 22.032 218.58C8.823 214.168-.076 201.775 0 187.852c.077-13.923 9.078-26.24 22.338-30.498L506.15 1.549c11.5-3.697 24.123-.663 32.666 7.88 8.542 8.543 11.577 21.165 7.879 32.666L390.89 525.906c-4.258 13.26-16.575 22.261-30.498 22.338-13.923.076-26.316-8.823-30.728-22.032l-63.393-190.153z' clipRule='evenodd' data-original='#000000' />
             </svg>
