@@ -89,7 +89,7 @@ const AboutUs = () => {
                     </h2>
 
                     <p className='font-normal text-xl leading-8 text-gray-500 max-lg:text-center max-w-2xl mx-auto'>
-                      Rainman isn't just a collection of components and guidelines; it's a philosophy. We go
+                      Rainman isn&lsquo;t just a collection of components and guidelines; it&lsquo;s a philosophy. We go
                       beyond aesthetics, prioritizing accessibility, scalability, and usability. Every element,
                       from the tiniest
                       detail to the grandest layout, is meticulously crafted to enhance functionality and elevate
