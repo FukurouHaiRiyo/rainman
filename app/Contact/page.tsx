@@ -1,6 +1,6 @@
 'use client';
 
-import React, { MouseEventHandler, useState } from 'react';
+import React, { useState } from 'react';
 
 const ContactUs = () => {
   const [firstName, setFirstName] = useState('');
