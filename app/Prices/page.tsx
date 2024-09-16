@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 const Prices = () => {
     const [selectedOption, setSelectedOption] = useState('Basic');
 
-    const handleOptionChange = (option: any) => {
+    const handleOptionChange = (option: string) => {
         if (option !== selectedOption) {
             setTimeout(() => {
                 setSelectedOption(option);
