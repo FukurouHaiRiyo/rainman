@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import Navbar from '@/components/navbar';
+import Navbar from '@/components/Navbar';
 import ContactUs from './Contact/page';
 
 const navigation = [
