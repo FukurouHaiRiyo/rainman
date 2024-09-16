@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { FingerPrintIcon, XMarkIcon, DevicePhoneMobileIcon, CommandLineIcon, PresentationChartLineIcon } from '@heroicons/react/24/outline';
 import { Dialog, DialogPanel } from '@headlessui/react';
-import Navbar from '@/components/navbar';
+import Navbar from '../../components/navbar';
 
 const services = [
     {
