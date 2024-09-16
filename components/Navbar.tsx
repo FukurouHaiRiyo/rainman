@@ -8,7 +8,7 @@ const navigation = [
   { name: 'Solutii IT', href: '/Services' },
   { name: 'Solutii Software WMS', href: '/Wms' },
   { name: 'Company', href: '#' },
-  { name: 'About us', href: '/AboutUs' },
+  { name: 'About us', href: '/About' },
 ]
 
 const Navbar = () => {
