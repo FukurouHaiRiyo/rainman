@@ -21,7 +21,7 @@ const ContactUs = () => {
       <div className='p-8 bg-gray-200'>
         <h2 className='text-3xl font-bold text-black'> Get In <span className='text-yellow-600'>Touch</span></h2>
 
-        <p className='text-sm text-gray-700 mt-4 leading-relaxed'> Completati formularul pentru a stabili o intalnire cu unul dintre specialistii nostri. Veti fi contactat in cel mai scurt timp posibil.</p>
+        <p className='text-sm text-gray-700 mt-4 leading-relaxed'> Completati formularul pentru a stabili o intalnire cu noi. Veti fi contactat in cel mai scurt timp posibil.</p>
 
         <form onSubmit={handleSubmit}>
           <div className='space-y-4 mt-8'>

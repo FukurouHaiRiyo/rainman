@@ -75,7 +75,7 @@ const Home = () => {
                 Vizualizati servicii
               </a>
 
-              <a href='/AboutUs' className='text-sm font-semibold leading-6 text-gray-900'>
+              <a href='/About' className='text-sm font-semibold leading-6 text-gray-900'>
                 Aflați mai multe <span aria-hidden='true'> → </span>
               </a>
             </div>

@@ -6,7 +6,7 @@ import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 const navigation = [
   { name: 'Home', href: '/' },
   { name: 'Solutii IT', href: '/Services' },
-  { name: 'Solutii Software WMS', href: '/Wms' },
+  { name: 'Solutii WMS', href: '/Wms' },
   { name: 'Company', href: '#' },
   { name: 'About us', href: '/About' },
 ]
