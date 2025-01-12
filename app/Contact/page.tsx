@@ -51,7 +51,7 @@ const ContactUs = () => {
             </svg>
 
             <a href='/' className='text-current text-sm ml-3'>
-              andrei-stefan.panait@rainman.com
+              andreipanait00@gmail.com
             </a>
           </li>
 

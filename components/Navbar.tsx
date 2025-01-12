@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
+import { Icons } from './Icons';
+import Image from 'next/image';
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -21,12 +23,8 @@ const Navbar = () => {
   return (
     <nav className='flex items-center justify-between p6 lg:px8'>
       <div className='flex lg:flex-1'>
-        <a href='#' className='-m-1.5 p-1.5'>
-          <span>
-            Rainman
-          </span>
-
-          <img className='h-8 w-auto' src='' alt='image' />
+        <a href='/' className='-m-1.5 p-1.5 text-black'>
+          <Image src='/favicon.ico' width={50} height={50} alt='image' className='text-black'/>
         </a>
       </div>
 
