@@ -1,8 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+
+import { getDatabase, ref, push } from '@firebase/database';
+import { firebase, db } from '../lib/firebase';
 
 const ContactUs = () => {
+  const { toast } = useToast();
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
@@ -11,9 +17,55 @@ const ContactUs = () => {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(firstName, lastName, emailAddress, phoneNumber, subject, message);
+    
+    toast({
+      title: 'Eroare',
+      description: 'Introdu toate datele necesare',
+      variant: 'destructive'
+    });
+
+    setIsSubmitting(true);
+
+    try{
+      const messageRef = ref(db, 'Messages');
+
+      // push the new object into database
+      await push(messageRef, {
+        firstName,
+        lastName,
+        emailAddress,
+        phoneNumber,
+        subject,
+        message,
+        createdAt: new Date().toISOString(),
+      });
+
+      // Reset form fields after submission
+      setFirstName('');
+      setLastName('');
+      setEmailAddress('');
+      setPhoneNumber('');
+      setSubject('');
+      setMessage('');
+
+      toast({
+        title: 'Mesaj trimis',
+        description: 'Mesajul tau a fost trimis cu succes'
+      })
+    } catch(error) {
+      console.log('Error saving message: ', error);
+      toast({
+        title: 'Eroare',
+        description: 'Nu s-a putut trimite mesajul. Incearca din now',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -25,20 +77,20 @@ const ContactUs = () => {
 
         <form onSubmit={handleSubmit}>
           <div className='space-y-4 mt-8'>
-            <input type='text' id='firstName' name='firstName' value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First name' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
-            <input type='text' id='lastName' name='lastName' value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last name' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
-            <input type='text' id='emailAddress' name='emailAddress' value={emailAddress} onChange={e => setEmailAddress(e.target.value)} placeholder='Email address' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
-            <input type='text' id='phoneNumber' name='phoneNumber' value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder='Phone number' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
+            <input required type='text' id='firstName' name='firstName' value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First name' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
+            <input required type='text' id='lastName' name='lastName' value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last name' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
+            <input required type='text' id='emailAddress' name='emailAddress' value={emailAddress} onChange={e => setEmailAddress(e.target.value)} placeholder='Email address' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
+            <input required type='text' id='phoneNumber' name='phoneNumber' value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder='Phone number' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
 
-            <input type='text' id='subject' name='subject' value={subject} onChange={e => setSubject(e.target.value)} placeholder='Subject' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
-            <textarea id='message' name='message' value={message} onChange={e => setMessage(e.target.value)} placeholder='Write message' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none'></textarea>
+            <input required type='text' id='subject' name='subject' value={subject} onChange={e => setSubject(e.target.value)} placeholder='Subject' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none' />
+            <textarea required id='message' name='message' value={message} onChange={e => setMessage(e.target.value)} placeholder='Write message' className='px-2 py-3 bg-transparent text-gray-700 w-full text-sm border-b border-gray-400 focus:border-yellow-400 outline-none'></textarea>
           </div>
 
-          <button type='submit' className='mt-8 flex items-center justify-center text-sm w-full rounded-md px-6 py-3 tracking-wide text-gray-800 bg-yellow-400 hover:bg-yellow-500'>
+          <button disabled={isSubmitting} type='submit' className='mt-8 flex items-center justify-center text-sm w-full rounded-md px-6 py-3 tracking-wide text-gray-800 bg-yellow-400 hover:bg-yellow-500'>
             <svg xmlns='http://www.w3.org/2000/svg' width='16px' fill='currentColor' className='mr-2' viewBox='0 0 548.244 548.244'>
               <path fillRule='evenodd' d='M392.19 156.054 211.268 281.667 22.032 218.58C8.823 214.168-.076 201.775 0 187.852c.077-13.923 9.078-26.24 22.338-30.498L506.15 1.549c11.5-3.697 24.123-.663 32.666 7.88 8.542 8.543 11.577 21.165 7.879 32.666L390.89 525.906c-4.258 13.26-16.575 22.261-30.498 22.338-13.923.076-26.316-8.823-30.728-22.032l-63.393-190.153z' clipRule='evenodd' data-original='#000000' />
             </svg>
-            Send message
+              {isSubmitting ? 'Sending...' : 'Send message'}
           </button>
 
           <p className='text-sm text-gray-700 mt-4 leading-relaxed'>Alternately, you can register <a href='/' className='text-blue-500 underline'>here</a> to contact us</p>

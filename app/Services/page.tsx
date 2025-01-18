@@ -14,6 +14,12 @@ const services = [
     },
 
     {
+        name: 'Web development',
+        description: 'We build beautiful websites based to your needs.',
+        icon: CommandLineIcon,
+    },
+
+    {
         name: 'Mobile app development',
         description: 'Turn your app idea into a user-friendly reality.',
         icon: DevicePhoneMobileIcon,

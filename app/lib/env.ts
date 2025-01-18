@@ -1,0 +1,8 @@
+export const FirebaseAPI_Key = 'AIzaSyBCisMnEBDEwIoGngWw5o3c5uy4q_EltcU'
+export const FirebaseAuthDomain = 'warehouse-management-sys-3a316.firebaseapp.com' 
+export const FirebaseDatabaseUrl = 'https://warehouse-management-sys-3a316-default-rtdb.europe-west1.firebasedatabase.app' 
+export const FirebaseProjectID = 'warehouse-management-sys-3a316'
+export const FireaseStorageBucket = 'warehouse-management-sys-3a316.firebasestorage.app'
+export const FirebaseMessagingSenderId = '273510170644' 
+export const FirebaseAppId = '1:273510170644:web:b45898b1df7fc3d6be6701' 
+export const FirebaseMeasurementId = 'G-PVCSDNB838'
