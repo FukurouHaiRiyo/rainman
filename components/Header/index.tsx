@@ -1,85 +1,64 @@
 import React from 'react';
-import Link from 'next/link';
-import DarkModeSwitcher from './DarkModeSwitcher';
-import DropdownUser from './DropdownUser';
 import Image from 'next/image';
-import SearchForm from './SearchForm';
+import Link from 'next/link';
 
+import { SearchIcon } from '@/assets/icons';
+import { useSidebarContext } from '../Sidebar/sidebar-context';
+import { MenuIcon } from './icons';
+import {ThemeToggleSwitch} from './theme-toggle';
+import UserInfo from './user-info';
 
-const Header = (props: {sidebarOpen: string | boolean | undefined; setSidebarOpen: (arg0: boolean) => void; }) => {
+const Header = () => {
+  const { toggleSidebar, isMobile } = useSidebarContext();
+
   return (
-    <header className='sticky top-0 z-999 flex w-full border-b border-stroke bg-white dark:border-stroke-dark dark:bg-gray-dark'>
-      <div className='flex flex-grow items-center justify-between px-4 py-5 shadow-2 md:px-5 2xl:px-10'>
-        <div className='flex items-center gap-2 sm:gap-4 lg:hidden'>
-          <button aria-controls='sidebar' onClick={(e) => { e.stopPropagation(); props.setSidebarOpen(!props.sidebarOpen)}} className='z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-dark-3 dark:bg-dark-2 lg:hidden'>
-            <span className='relative block h-5.5 w-5.5 cursor-pointer'>
-              <span className='du-block absolute right-0 h-full w-full'>
-                <span className={`relative left-0 top-0 my-1 h-0.5 w-0 rounded-sm bg-dark delay-[0] duration-200 ease-in-out dark:bg-white ${!props.sidebarOpen && "!w-full delay-300"}`}></span>
-                <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-dark delay-150 duration-200 ease-in-out dark:bg-white ${
-                    !props.sidebarOpen && "delay-400 !w-full"
-                  }`}
-                ></span>
-                <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-dark delay-200 duration-200 ease-in-out dark:bg-white ${
-                    !props.sidebarOpen && "!w-full delay-500"
-                  }`}
-                ></span>
-              </span>
+    <header className='sticky top-0 z-30 flex items-center justify-between border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-dark md:px-5 2xl:px-10'>
+      <button
+        onClick={toggleSidebar}
+        className='rounded-lg border px-1.5 py-1 dark:border-stroke-dark dark:bg-[#020D1A] hover:dark:bg-[#FFFFFF1A] lg:hidden'
+      >
+        <MenuIcon />
+        <span className='sr-only'>Toggle Sidebar</span>
+      </button>
 
-              <span className='absolute right-0 h-full w-full rotate-45'>
-              <span
-                  className={`absolute left-2.5 top-0 block h-full w-0.5 rounded-sm bg-dark delay-300 duration-200 ease-in-out dark:bg-white ${
-                    !props.sidebarOpen && "!h-0 !delay-[0]"
-                  }`}
-                ></span>
-                <span
-                  className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-dark duration-200 ease-in-out dark:bg-white ${
-                    !props.sidebarOpen && "!h-0 !delay-200"
-                  }`}
-                ></span>
-              </span>
-            </span>
-          </button>
+      {isMobile && (
+        <Link href={'/'} className='ml-2 max-[430px]:hidden min-[375px]:ml-4'>
+          <Image
+            src={'/images/logo/logo-icon.svg'}
+            width={32}
+            height={32}
+            alt=''
+            role='presentation'
+          />
+        </Link>
+      )}
 
-          <Link className='block flex-shrink-0 lg:hidden' href='/'>
-            <Image 
-              width={32}
-              height={32}
-              src={''}
-              alt='logo'
-            />
-          </Link>
+      <div className='max-xl:hidden'>
+        <h1 className='mb-0.5 text-heading-5 font-bold text-dark dark:text-white'>
+          Dashboard
+        </h1>
+        <p className='font-medium'>Next.js Admin Dashboard Solution</p>
+      </div>
+
+      <div className='flex flex-1 items-center justify-end gap-2 min-[375px]:gap-4'>
+        <div className='relative w-full max-w-[300px]'>
+          <input
+            type='search'
+            placeholder='Search'
+            className='flex w-full items-center gap-3.5 rounded-full border bg-gray-2 py-3 pl-[53px] pr-5 outline-none transition-colors focus-visible:border-primary dark:border-dark-3 dark:bg-dark-2 dark:hover:border-dark-4 dark:hover:bg-dark-3 dark:hover:text-dark-6 dark:focus-visible:border-primary'
+          />
+
+          <SearchIcon className='pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 max-[1015px]:size-5' />
         </div>
 
-        <div className='hidden xl:block'>
-          <div>
-            <h1 className='mb-0.5 text-heading-5 font-bold text-dark dark:text-white'>
-              Dashboard
-            </h1>
+        <ThemeToggleSwitch />
 
-            <p className='font-medium'>
-              Admin dashboard
-            </p>
-          </div>
-        </div>
-
-        <div className='flex items-center justify-normal gap-2 2xsm:gap-4 lg:w-full lg:justify-between xl:w-auto xl:justify-normal'>
-        <ul className='flex items-center gap-2 2xsm:gap-4'>
-            {/* <!-- Search Form --> */}
-            <SearchForm />
-            {/* <!-- Search Form --> */}
-
-            {/* <!-- Dark Mode Toggle --> */}
-            <DarkModeSwitcher />
-            {/* <!-- Dark Mode Toggle --> */}
-          </ul>
-
-          <DropdownUser />
+        <div className='shrink-0'>
+          <UserInfo />
         </div>
       </div>
     </header>
-  )
+  );
 }
 
 export default Header;

@@ -1,13 +1,19 @@
 import React from 'react';
 import { AiOutlineReload } from 'react-icons/ai';
+import { InventoryItem } from '../Inventory/types/InventoryItem';
 
 interface RefreshButtonProps {
   fetchInventory: () => Promise<void> | void;
+  setInventory?: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
 }
 
-const RefreshButton: React.FC<RefreshButtonProps> = ({ fetchInventory }) => {
+const RefreshButton: React.FC<RefreshButtonProps> = ({ fetchInventory, setInventory  }) => {
   const handleRefresh = async () => {
-    fetchInventory();
+    await fetchInventory();
+
+    if (setInventory) {
+      setInventory([]);
+    }
   }
 
   return (

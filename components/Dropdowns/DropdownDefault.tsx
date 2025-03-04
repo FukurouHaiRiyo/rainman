@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ClickOutside from '@/components/ClickOutside';
+import ClickOutside from '@/hooks/ClickOutside';
 
 const DropdownDefault = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

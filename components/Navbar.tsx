@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
-import { Icons } from './Icons';
 import Image from 'next/image';
 
 const navigation = [
@@ -11,6 +10,7 @@ const navigation = [
   { name: 'Solutii WMS', href: '/Wms' },
   { name: 'Company', href: '#' },
   { name: 'About us', href: '/About' },
+  { name: 'Portal clienti', href: '/auth/signIn'},
 ]
 
 const Navbar = () => {

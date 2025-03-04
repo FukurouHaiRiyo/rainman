@@ -67,7 +67,7 @@ const Home = () => {
             </h1>
 
             <p className='mt-6 text-lg leading-8 text-gray-800'>
-            Optimizați-vă tehnologia și infrastructura de gestionare a depozitelor cu experți IT și consultanță în managementul depozitelor
+              Transformați-vă tehnologia și gestionarea depozitelor cu soluții IT personalizate și consultanță de specialitate în managementul depozitelor și în domeniul IT.
             </p>
 
             <div className='mt-10 flex items-center justify-center gap-x-6'>

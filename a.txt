@@ -1,0 +1,22 @@
+inventory 
+   product_id
+       item_number
+       description
+       lpn_number
+       lot_number
+       status
+       location
+       cases
+       manufactured_date
+       expiration_date
+       aging_profile
+
+
+Display username/name in Admin page - done - make user details page too
+Make settings page - also include Name, Fullname, phone number, bio and profile photo
+Get pfp in DropdownUser.tsx 
+Add pfp in user table in firebase
+Add edit user button
+Add pfp in the database in user table
+Display inventory info in Admin page for user with permissions to view it 
+CRUD operations for inventory (create - read - update - delete) - this is for admins or empoyees

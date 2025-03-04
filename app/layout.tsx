@@ -1,6 +1,10 @@
+'use client'
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+
+import { AuthUserProvider } from "./context/AuthUserContext";
 import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
@@ -14,10 +18,10 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export const metadata: Metadata = {
-  title: "Rainman Consulting",
-  description: "Rainman",
-};
+// export const metadata: Metadata = {
+//   title: "Rainman Consulting",
+//   description: "Rainman",
+// };
 
 export default function RootLayout({
   children,
@@ -25,13 +29,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-        <Toaster />
-      </body>
-    </html>
+    <AuthUserProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+          <Toaster />
+        </body>
+      </html>
+    </AuthUserProvider>
   );
 }
