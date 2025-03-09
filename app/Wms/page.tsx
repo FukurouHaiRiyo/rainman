@@ -8,7 +8,7 @@ const Wms = () => {
           <div>
             <h1 className='block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight'>Incepeti calatoria cu <span className='text-blue-600'>Rainman</span></h1>
             <p className='mt-3 text-lg text-neutral-800 dark:text-gray-900'>Optimizati operatiunile din depozit cu solutii in cloud sau on premise.
-            Administrati automat si complet toate activitatile din depozit pentru un numar nelimitat de entitati.</p>
+              Administrati automat si complet toate activitatile din depozit pentru un numar nelimitat de entitati.</p>
 
             <div className='mt-7 grid gap-3 w-full sm:inline-flex'>
               <a className='py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none' href='/Contact'>

@@ -36,23 +36,41 @@ const DisplayInventory: React.FC = () => {
   const fetchInventory = async () => {
     try {
       const inventoryRef = ref(db, 'inventory');
-      let dbQuery = query(inventoryRef, orderByChild(modifier));
 
-      if (searchTerm) {
-        dbQuery = query(inventoryRef, orderByChild(modifier), equalTo(searchTerm));
-      }
+      if (!modifier) {
+        console.warn('Modifier is empty, getting data without orderByChild');
+        const snapshot = await get(inventoryRef);
 
-      const snapshot = await get(dbQuery);
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const itemList: InventoryItem[] = Object.keys(data).map((key) => ({
-          id: key,
-          ...data[key]
-        }));
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const itemList: InventoryItem[] = Object.keys(data).map((key) => ({
+            id: key,
+            ...data[key]
+          }));
 
-        setInventory(itemList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
+          setInventory(itemList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
+        } else {
+          setInventory([]);
+        }
       } else {
-        setInventory([]);
+        // let dbQuery = query(inventoryRef, orderByChild(modifier));
+
+        // if (searchTerm) {
+        //   dbQuery = query(inventoryRef, orderByChild(modifier), equalTo(searchTerm));
+        // }
+
+        // const snapshot = await get(dbQuery);
+        // if (snapshot.exists()) {
+        //   const data = snapshot.val();
+        //   const itemList: InventoryItem[] = Object.keys(data).map((key) => ({
+        //     id: key,
+        //     ...data[key]
+        //   }));
+
+        //   setInventory(itemList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
+        // } else {
+        //   setInventory([]);
+        // }
       }
     } catch(error) {
       console.error('Error fetching inventory:', error);
@@ -139,27 +157,6 @@ const DisplayInventory: React.FC = () => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className='flex animate-pulse'>
-        <div className='srhink-0'>
-          <span className='size-12 block bg-gray-200 rounded-full dark:bg-neutral-700'></span>
-        </div>
-
-        <div className='ms-4 mt-2 w-full'>
-          <p className='h-4 bg-gray-200 rounded-full dark:bg-neutral-700' style={{width: '40%'}}></p>
-
-          <ul className='mt-5 space-y-3'>
-          <li className='w-full h-4 bg-gray-200 rounded-full dark:bg-neutral-700'></li>
-          <li className='w-full h-4 bg-gray-200 rounded-full dark:bg-neutral-700'></li>
-          <li className='w-full h-4 bg-gray-200 rounded-full dark:bg-neutral-700'></li>
-          <li className='w-full h-4 bg-gray-200 rounded-full dark:bg-neutral-700'></li>
-        </ul>
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     toast({
       title: 'Eroare',
@@ -245,8 +242,8 @@ const DisplayInventory: React.FC = () => {
         </button>
       </div>
 
-      {/* {isOpen && <ItemModal setIsOpen={setIsOpen} closeModal={closeModal} onSave={onSave} selectedRows={selectedRows} />}
-      {showDeleteModal && <DeleteConfirmationModal onCancel={() => setShowDeleteModal(false)} onConfirm={confirmDelete} />} */}
+      {/* {isOpen && <ItemModal setIsOpen={setIsOpen} closeModal={closeModal} onSave={onSave} selectedRows={selectedRows} />} */}
+      {/* {showDeleteModal && <DeleteConfirmationModal onCancel={() => setShowDeleteModal(false)} onConfirm={confirmDelete} />}  */}
     </div>
   )
 }

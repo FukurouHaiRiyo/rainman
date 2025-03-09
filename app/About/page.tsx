@@ -65,11 +65,11 @@ const AboutUs = () => {
                 <div className='lg:pl-[100px] items-center'>
                   <div className='data w-full'>
                     <h2 className='font-manrope font-bold text-4xl lg:text-5xl text-black mb-9 max-lg:text-center relative'>
-                      About us
+                      Despre noi
                     </h2>
 
                     <p className='font-normal text-xl leading-8 text-gray-500 max-lg:text-center max-w-2xl mx-auto'>
-                      Driven by a passion for seamless user experiences, we`ve meticulously curated pagedone to empower creators, designers, and developers alike. Our mission is to provide a comprehensive toolkit, enabling you to build intuitive, beautiful interfaces that resonate with users on every interaction.
+                      Impulsionați de pasiunea pentru soluții eficiente și inovatoare, am creat cu atenție serviciile noastre pentru a sprijini atât gestionarea depozitelor, cât și dezvoltarea IT. Misiunea noastră este de a oferi un set complet de instrumente și servicii, permițându-vă să optimizați operațiunile logistice, să îmbunătățiți fluxurile de lucru și să creați soluții tehnologice intuitive, care să răspundă perfect nevoilor afacerii dumneavoastră.
                     </p>
                   </div>
                 </div>
@@ -85,16 +85,11 @@ const AboutUs = () => {
                     <img src='https://pagedone.io/asset/uploads/1702034785.png' alt='About Us tailwind page' className='block lg:hidden mb-9 mx-auto'/>
 
                     <h2 className='font-manrope font-bold text-4xl lg:text-5xl text-black mb-9 max-lg:text-center'>
-                      We are creative since 2022
+                      Suntem creativi din 2022.
                     </h2>
 
                     <p className='font-normal text-xl leading-8 text-gray-500 max-lg:text-center max-w-2xl mx-auto'>
-                      Rainman isn&lsquo;t just a collection of components and guidelines; it&lsquo;s a philosophy. We go
-                      beyond aesthetics, prioritizing accessibility, scalability, and usability. Every element,
-                      from the tiniest
-                      detail to the grandest layout, is meticulously crafted to enhance functionality and elevate
-                      user
-                      satisfaction.
+                      Rainman nu este doar o colecție de componente și ghiduri; este o filozofie. Depășim simpla estetică, punând pe primul loc accesibilitatea, scalabilitatea și utilitatea. Fiecare element, de la cel mai mic detaliu până la cele mai complexe structuri, este conceput cu atenție pentru a optimiza funcționalitatea și a îmbunătăți eficiența în gestionarea depozitelor și soluțiile IT.
                     </p>
                   </div>
                 </div>

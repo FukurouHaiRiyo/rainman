@@ -9,8 +9,8 @@ const navigation = [
   { name: 'Solutii IT', href: '/Services' },
   { name: 'Solutii WMS', href: '/Wms' },
   { name: 'Company', href: '#' },
-  { name: 'About us', href: '/About' },
-  { name: 'Portal clienti', href: '/auth/signIn'},
+  { name: 'Despre noi', href: '/About' },
+  // { name: 'Portal clienti', href: '/auth/signIn'},
 ]
 
 const Navbar = () => {
