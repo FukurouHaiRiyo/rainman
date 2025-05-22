@@ -1,35 +1,5 @@
-// import Firebase from 'firebase/compat/app';
-// import 'firebase/compat/auth';
-// import 'firebase/compat/firestore';
-// import { getdb } from 'firebase/db';
-// import { getAuth } from 'firebase/auth';
-
-// 
-
-// // Firebase configuration
-// const firebaseConfig = {
-//     apiKey: FirebaseAPI_Key,
-//     authDomain: FirebaseAuthDomain,
-//     dbURL: FirebasedbUrl,
-//     projectId: FirebaseProjectID,
-//     storageBucket: FireaseStorageBucket,
-//     messagingSenderId: FirebaseMessagingSenderId,
-//     appId: FirebaseAppId,
-//     measurementId: FirebaseMeasurementId
-// };
-
-// // Initialize Firebase
-// const firebase = Firebase.initializeApp(firebaseConfig);
-// const { FieldValue } = Firebase.firestore;
-
-// export const auth = getAuth(firebase);
-// export const db = getdb(firebase);
-
-// export { firebase, FieldValue }
-
 "use client"
 
-import Firebase from 'firebase/compat/app';
 import { initializeApp, getApps, getApp } from "firebase/app"
 import {
   getAuth,
@@ -43,39 +13,94 @@ import { getDatabase, ref, onValue, off, get, set, push, update, remove } from "
 import { getStorage } from "firebase/storage"
 import { useState, useEffect, useCallback } from "react"
 
-// Firebase configuration from environment variables
+// Firebase configuration
 const firebaseConfig = {
- apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  }
-  
-  // Initialize Firebase
-  let app
-  let db: any
-  let storage
-  const firebase = Firebase.initializeApp(firebaseConfig);
-  const auth = getAuth(firebase);
-  app = initializeApp(firebaseConfig)
-  db = getDatabase(app);
-  storage = getStorage(app);
-  
-  if (typeof window !== "undefined" && !getApps().length) {
-  try {
-    app = initializeApp(firebaseConfig)
-    db = getDatabase(app)
-    storage = getStorage(app)
-    console.log("Firebase initialized successfully")
-  } catch (error) {
-    console.error("Firebase initialization error:", error)
-  }
 }
 
-// Update the useFirebaseData hook to include refresh functionality
+// Initialize Firebase
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
+
+// Initialize Firebase services
+const auth = getAuth(app)
+const db = getDatabase(app)
+const storage = getStorage(app)
+
+console.log("Firebase initialized with config:", {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? "set" : "not set",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? "set" : "not set",
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ? "set" : "not set",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? "set" : "not set",
+})
+
+// Authentication functions
+export const signIn = (email: string, password: string) => {
+  return signInWithEmailAndPassword(auth, email, password)
+}
+
+export const signUp = (email: string, password: string) => {
+  return createUserWithEmailAndPassword(auth, email, password)
+}
+
+export const signOut = () => {
+  return firebaseSignOut(auth)
+}
+
+// Custom hook for authentication state
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!auth) return
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user)
+      setLoading(false)
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  return { user, loading }
+}
+
+// Custom hook for user roles
+export function useUserRole(uid: string | undefined) {
+  const [role, setRole] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!db || !uid) {
+      setLoading(false)
+      return
+    }
+
+    const userRoleRef = ref(db, `users/${uid}/role`)
+
+    const handleData = (snapshot: any) => {
+      const userRole = snapshot.val()
+      setRole(userRole)
+      setLoading(false)
+    }
+
+    onValue(userRoleRef, handleData)
+
+    return () => {
+      off(userRoleRef, "value", handleData)
+    }
+  }, [uid, db])
+
+  return { role, loading }
+}
+
+// Custom hook for Firebase data
 export function useFirebaseData(path: string) {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -99,32 +124,32 @@ export function useFirebaseData(path: string) {
     const dbRef = ref(db, path)
 
     // Listen for changes
-    onValue(
-      dbRef,
-      (snapshot) => {
-        const val = snapshot.val()
-        if (val) {
-          // Convert Firebase object to array if it's an object with keys
-          if (typeof val === "object" && !Array.isArray(val)) {
-            const dataArray = Object.keys(val).map((key) => ({
-              id: key,
-              ...val[key],
-            }))
-            setData(dataArray)
-          } else {
-            setData(val)
-          }
+    const handleData = (snapshot: any) => {
+      const val = snapshot.val()
+      if (val) {
+        // Convert Firebase object to array if it's an object with keys
+        if (typeof val === "object" && !Array.isArray(val)) {
+          const dataArray = Object.keys(val).map((key) => ({
+            id: key,
+            ...val[key],
+          }))
+          setData(dataArray)
         } else {
-          setData([])
+          setData(val)
         }
-        setLoading(false)
-      },
-      (err) => {
-        console.error(`Error fetching data from ${path}:`, err)
-        setError(err)
-        setLoading(false)
-      },
-    )
+      } else {
+        setData([])
+      }
+      setLoading(false)
+    }
+
+    const handleError = (err: Error) => {
+      console.error(`Error fetching data from ${path}:`, err)
+      setError(err)
+      setLoading(false)
+    }
+
+    onValue(dbRef, handleData, handleError)
 
     // Clean up listener
     return () => {
@@ -135,7 +160,7 @@ export function useFirebaseData(path: string) {
   return { data, loading, error, refreshData }
 }
 
-// Enhance the firebaseService with better error handling and return values
+// Firebase service for CRUD operations
 export const firebaseService = {
   // Create a new item
   create: async (path: string, data: any) => {
@@ -191,4 +216,4 @@ export const firebaseService = {
 }
 
 // Export Firebase instances
-export { auth, app, db, storage }
+export { app, auth, db, storage, onAuthStateChanged }

@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -110,10 +111,399 @@ const IncidentReport = () => {
     setDeleteDialogOpen(true);
   }
 
-  
+  // Add confirm delete function
+  const confirmDelete = async () => {
+    if (!selectedIncident) 
+      return;
+
+    const result = await firebaseService.delete('incidents', selectedIncident.id);
+
+    if (result.success){
+      toast({
+        title: 'Incidentul a fost șters',
+        description: 'Raportul incidentului a fost șters cu succes.',
+      });
+      refreshData();
+    } else {
+      toast({
+        title: 'Error',
+        description: 'A apărut o eroare la ștergerea incidentul. Vă rugăm să încercați din nou.',
+        variant: 'destructive'
+      });
+    }
+
+    setDeleteDialogOpen(false);
+    setSelectedIncident(null);
+  }
+
+  // Update the submit function
+  const handleSubmit = async() => {
+    // validate form
+    if (!formData.title || !formData.type || !formData.severity || !formData.location || !formData.reportedBy) {
+      toast({
+        title: 'Informații lipsă',
+        description: 'Vă rugăm să completați toate câmpurile obligatorii.',
+        variant: 'destructive'
+      });
+
+      return;
+    }
+
+    try {
+      const incidentData = {
+        title: formData.title,
+        type: formData.type,
+        severity: formData.severity,
+        location: formData.location,
+        date: formData.date || new Date().toLocaleDateString(),
+        reportedBy: formData.reportedBy,
+        description: formData.description,
+        actions: formData.actions,
+        status: formData.status,
+      }
+
+      let result
+
+      if (isEditing && selectedIncident) {
+        // Update existing incident
+        result = await firebaseService.update('incidents', selectedIncident.id, incidentData);
+
+        if (result.success) {
+          toast({
+            title: 'Incident actualizat',
+            description: 'Raportul de incident a fost actualizat cu succes.',
+          });
+        }
+      } else {
+        // Create new incident
+        result = await firebaseService.create('incidents', incidentData)
+
+        if (result.success) {
+          toast({
+            title: 'Incident raportat',
+            description: 'Raportul dvs. de incident a fost trimis cu succes.',
+          });
+        }
+      }
+
+      if (!result.success) {
+        throw new Error('Operation failed');
+      }
+
+      // Reset form and close dialog
+      resetForm()
+      setOpen(false)
+    } catch(error){
+       console.error('Error saving incident:', error);
+      toast({
+        title: 'Eroare',
+        description: 'Nu s-a putut salvat raportul incidentului. Vă rugăm să încercați din nou.',
+        variant: 'destructive',
+      });
+    }
+  }
+
+  const filteredIncidents =
+    incidents?.filter(
+      (incident: any) =>
+        incident.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        incident.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        incident.reportedBy.toLowerCase().includes(searchQuery.toLowerCase()),
+    ) || [];
 
   return (
-    <div>IncidentReport</div>
+    <>
+      <div className='flex items-center justify-between'>
+        <div className='space-y-1'>
+          <h2 className='text-2xl font-semibold tracking-tight'>
+            Rapoarte de incidente
+          </h2>
+
+          <p className='text-sm text-muted-foreground'>
+            Urmăriți și gestionați incidentele din depozit
+          </p>
+        </div>
+
+        <div className='flex items-center gap-2'>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className='mr-2 h-4 w-4' />
+                  Raportează incident
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className='sm:max-w-[600px]'>
+              <DialogHeader>
+                <DialogTitle>{isEditing ? 'Editați raportul de incident' : 'Raportați un nou incident'}</DialogTitle>
+                <DialogDescription>
+                  {isEditing
+                    ? 'Actualizați detaliile incidentului.'
+                    : 'Completați detaliile incidentului care a avut loc.'}
+                </DialogDescription>
+              </DialogHeader>
+              <div className='grid gap-4 py-4'>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='title' className='text-right'>
+                    Titlu
+                  </Label>
+                  <Input
+                    id='title'
+                    className='col-span-3'
+                    placeholder='Brief description of the incident'
+                    value={formData.title}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='type' className='text-right'>
+                    Tipul incidentului
+                  </Label>
+                  <Select onValueChange={(value) => handleSelectChange('type', value)} value={formData.type}>
+                    <SelectTrigger className='col-span-3'>
+                      <SelectValue placeholder='Select incident type' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='safety'>Pericol de siguranță</SelectItem>
+                      <SelectItem value='equipment'>Defecțiunea echipamentului</SelectItem>
+                      <SelectItem value='security'>Încălcarea securității</SelectItem>
+                      <SelectItem value='damage'>Deteriorarea produsului</SelectItem>
+                      <SelectItem value='other'>Altele</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='severity' className='text-right'>
+                    Severitate
+                  </Label>
+                  <Select onValueChange={(value) => handleSelectChange('severity', value)} value={formData.severity}>
+                    <SelectTrigger className='col-span-3'>
+                      <SelectValue placeholder='Select severity level' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='low'>Scăzut</SelectItem>
+                      <SelectItem value='medium'>Mediu</SelectItem>
+                      <SelectItem value='high'>Ridicat</SelectItem>
+                      <SelectItem value='critical'>Critic</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='location' className='text-right'>
+                    Locaţie
+                  </Label>
+                  <Input
+                    id='location'
+                    className='col-span-3'
+                    placeholder='Where the incident occurred'
+                    value={formData.location}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='date' className='text-right'>
+                    Data și ora
+                  </Label>
+                  <Input
+                    id='date'
+                    type='datetime-local'
+                    className='col-span-3'
+                    value={formData.date}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='reportedBy' className='text-right'>
+                    Raportat de
+                  </Label>
+                  <Input
+                    id='reportedBy'
+                    className='col-span-3'
+                    placeholder='Your name'
+                    value={formData.reportedBy}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className='grid grid-cols-4 items-start gap-4'>
+                  <Label htmlFor='description' className='text-right pt-2'>
+                    Descriere
+                  </Label>
+                  <Textarea
+                    id='description'
+                    className='col-span-3'
+                    placeholder='Detailed description of what happened'
+                    rows={5}
+                    value={formData.description}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className='grid grid-cols-4 items-start gap-4'>
+                  <Label htmlFor='actions' className='text-right pt-2'>
+                    Acțiuni întreprinse
+                  </Label>
+                  <Textarea
+                    id='actions'
+                    className='col-span-3'
+                    placeholder='What immediate actions were taken'
+                    rows={3}
+                    value={formData.actions}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='status' className='text-right'>
+                    Status
+                  </Label>
+                  <Select onValueChange={(value) => handleSelectChange('status', value)} value={formData.status}>
+                    <SelectTrigger className='col-span-3'>
+                      <SelectValue placeholder='Select status' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='reported'>Raportat</SelectItem>
+                      <SelectItem value='investigating'>Investigare</SelectItem>
+                      <SelectItem value='resolved'>Rezolvat</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  variant='outline'
+                  onClick={() => {
+                    resetForm()
+                    setOpen(false)
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button type='submit' onClick={handleSubmit}>
+                  {isEditing ? 'Update Report' : 'Submit Report'}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <div className='relative mt-4'>
+        <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
+        <Input
+          type='search'
+          placeholder='Cautare'
+          className='pl-8 w-full md:w-1/3 lg:w-1/4'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle>Jurnalul de incidente</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Titlu</TableHead>
+                  <TableHead>Tip</TableHead>
+                  <TableHead>Severitate</TableHead>
+                  <TableHead>Locaţie</TableHead>
+                  <TableHead>Data si ora</TableHead>
+                  <TableHead>Raportat de</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Acțiuni</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredIncidents.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8">
+                      <div className="flex flex-col items-center justify-center text-muted-foreground">
+                        <AlertTriangle className="h-8 w-8 mb-2" />
+                        <p>Nu au fost găsite incidente</p>
+                        {searchQuery && <p className="text-sm">Încercați să ajustați interogarea de căutare</p>}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredIncidents.map((incident: any) => (
+                    <TableRow key={incident.id}>
+                      <TableCell className="font-medium">{incident.title}</TableCell>
+                      <TableCell>{incident.type}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            incident.severity === "low"
+                              ? "outline"
+                              : incident.severity === "medium"
+                                ? "secondary"
+                                : incident.severity === "high"
+                                  ? "default"
+                                  : "destructive"
+                          }
+                        >
+                          {incident.severity}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{incident.location}</TableCell>
+                      <TableCell>{incident.date}</TableCell>
+                      <TableCell>{incident.reportedBy}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            incident.status === "resolved"
+                              ? "default"
+                              : incident.status === "investigating"
+                                ? "secondary"
+                                : "outline"
+                          }
+                        >
+                          {incident.status}
+                        </Badge>
+                      </TableCell>
+                      {/* Add edit and delete buttons to the table rows */}
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(incident)} className="mr-2">
+                          <Edit className="mr-2 h-4 w-4" />
+                          Editează
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleDelete(incident)}>
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Şterge
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Ești sigur?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Această acțiune nu poate fi anulată. Acest lucru va șterge definitiv raportul incidentului
+              {selectedIncident && <strong> "{selectedIncident.title}"</strong>} din baza de date.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground">
+              Şterge
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
 
