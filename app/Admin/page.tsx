@@ -1,12 +1,9 @@
 import React from 'react';
-import Dashboard from '@/components/Dashboard/Dash';
-import DefaultLayout from '@/components/Layouts/DefaultLayout';
+import Dashboard from '@/components/dashboard';
 
 const page = () => {
   return (
-    <DefaultLayout>
-      <Dashboard />
-    </DefaultLayout>
+    <Dashboard />
   )
 }
 

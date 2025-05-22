@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { useAuth } from '@/app/context/AuthUserContext';
+import { useAuth } from '@/context/AuthUserContext';
 import { toast } from '@/hooks/use-toast';
 
 const SignIn = () => {

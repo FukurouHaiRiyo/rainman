@@ -1,43 +1,30 @@
-'use client'
+import type React from "react"
+import { ClerkProvider } from "@clerk/nextjs"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { Toaster } from "@/components/ui/toaster"
+import { UserProvider } from "@/context/user-context"
 
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+const inter = Inter({ subsets: ["latin"] })
 
-import { AuthUserProvider } from "./context/AuthUserContext";
-import { Toaster } from "@/components/ui/toaster";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
-// export const metadata: Metadata = {
-//   title: "Rainman Consulting",
-//   description: "Rainman",
-// };
+export const metadata = {
+  title: "Warehouse Management System",
+  description: "A comprehensive warehouse management system",
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <AuthUserProvider>
+    <ClerkProvider>
       <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {children}
+        <body className={inter.className}>
+          <UserProvider>{children}</UserProvider>
           <Toaster />
         </body>
       </html>
-    </AuthUserProvider>
-  );
+    </ClerkProvider>
+  )
 }

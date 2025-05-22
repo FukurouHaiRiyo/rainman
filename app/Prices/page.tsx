@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 const Prices = () => {
     const [selectedOption, setSelectedOption] = useState('Basic');
@@ -649,6 +650,7 @@ const Prices = () => {
                     </div>
                 </div>
             )}
+        <Footer />
         </div>
     )
 }

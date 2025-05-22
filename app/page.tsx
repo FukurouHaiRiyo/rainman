@@ -5,6 +5,7 @@ import { Dialog, DialogPanel } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Navbar from '@/components/Navbar';
 import ContactUs from './Contact/page';
+import Footer from '@/components/Footer';
 
 
 const Home = () => {
@@ -72,7 +73,11 @@ const Home = () => {
 
             <div className='mt-10 flex items-center justify-center gap-x-6'>
               <a href='/Services' className='rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focu-visible:outline-2 focus-visible:outline-indigo-600'>
-                Vizualizati servicii
+                Vizualizati servicii IT
+              </a>
+
+              <a href='/Wms' className='rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focu-visible:outline-2 focus-visible:outline-indigo-600'>
+                Vizualizati solutii WMS
               </a>
 
               <a href='/About' className='text-sm font-semibold leading-6 text-gray-900'>
@@ -94,6 +99,7 @@ const Home = () => {
       </div>
 
       <ContactUs/>
+      <Footer />
     </div>
   );
 }
