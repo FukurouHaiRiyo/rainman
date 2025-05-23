@@ -116,9 +116,9 @@ export default function DashboardPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{getRoleName(userRole as any)} Dashboard</h1>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setIsDebugVisible(!isDebugVisible)}>
+          {/* <Button variant="outline" onClick={() => setIsDebugVisible(!isDebugVisible)}>
             {isDebugVisible ? "Hide Debug" : "Show Debug"}
-          </Button>
+          </Button> */}
         </div>
       </div>
 
