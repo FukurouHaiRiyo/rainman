@@ -35,7 +35,7 @@ import OrdersOverview from '@/components/orders/overview'
 import ProductionTimeline from '@/components/production/timeline'
 import OrderCalendar from '@/components/calendar/scheduler'
 import { Navbar } from '@/components/nav'
-import { useUserRole } from '@/context/user-context'
+import { UserProvider, useUserRole } from '@/context/user-context'
 import { canViewSidebarItem } from '@/app/lib/roles'
 
 export default function Dashboard() {
@@ -70,6 +70,7 @@ export default function Dashboard() {
   const filteredSidebarItems = sidebarItems.filter((item) => canViewSidebarItem(role, item.id))
 
   return (
+    <UserProvider>
     <SidebarProvider>
       <div className='flex min-h-screen flex-col'>
         <Navbar />
@@ -112,7 +113,7 @@ export default function Dashboard() {
                 </Button>
               </div>
             </SidebarFooter>
-          </Sidebar>
+          </Sidebar>  
           <div className='flex-1 p-6'>
             <Tabs value={activeTab} onValueChange={setActiveTab} className='space-y-4'>
               <div className='flex items-center justify-between'>
@@ -161,5 +162,6 @@ export default function Dashboard() {
         </div>
       </div>
     </SidebarProvider>
+    </UserProvider>
   )
 }

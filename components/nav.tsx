@@ -17,6 +17,7 @@ import { useUserRole } from '@/context/user-context';
 import { Badge } from '@/components/ui/badge';
 import { useClerk, useUser } from '@clerk/nextjs';
 import Link from 'next/link';
+import { clerkClient } from '@clerk/clerk-sdk-node';
 
 export function Navbar() {
   const { user } = useUser()

@@ -117,5 +117,6 @@ export function getDashboardComponentsForRole(role: UserRole): string[] {
 }
 
 export function getRoleName(role: UserRole): string {
+  console.log(ROLES[role]?.name || "User")
   return ROLES[role]?.name || "User"
 }
