@@ -4,7 +4,7 @@ import { useUser } from "@clerk/nextjs"
 import { useEffect, useState } from "react"
 import { getRoleName } from "@/app/lib/roles"
 // import { ManagerDashboard } from "@/components/dashboards/manager-dashboard"
-import InventoryDashboard from "@/components/dashboards/inventory-dashboard"
+import InventoryDashboard from "../dashboard/inventory/page";
 // import { DriverDashboard } from "@/components/dashboards/driver-dashboard"
 // import { EmployeeDashboard } from "@/components/dashboards/employee-dashboard"
 // import { GuestDashboard } from "@/components/dashboards/guest-dashboard"

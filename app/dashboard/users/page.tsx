@@ -13,7 +13,32 @@ import { useToast } from '@/hooks/use-toast';
 import { getRoleName } from '@/app/lib/roles';
 import AddUserDialog from '@/components/dashboard/add-user-dialog';
 
+interface User {
+  id: string;
+  firstName: string | null
+  lastName: string | null
+  email: string | null
+  imageUrl: string | null
+  role: string
+  createdAt: string
+  lastSignInAt: string | null
+}
+
 const UsersPage = () => {
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
+  const { toast } = useToast();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, isLoading] = useState(true);
+  const [updating, setUpdating] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check if user is admin
+    if (isLoaded && user) {
+      
+    }
+  })
+
   return (
     <div>
       

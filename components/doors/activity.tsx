@@ -99,7 +99,34 @@ const DoorActivity = () => {
 
                   return (
                     <Card key={i} className={cn('overflow-hidden', hasAlarm && 'border-red-500')}>
+                      <CardHeader className='p-4 pb-2'>
+                        <CardTitle className='text-lg flex items-center justify-between'>
+                          <span>Door {doorNumber}</span>
+                          {hasAlarm && <Badge variant='destructive'>Alarm</Badge>}
+                        </CardTitle>
+                      </CardHeader>
 
+                      <CardContent className='p-4 pt-0'>
+                        <div className='flex items-center justify-between'>
+                          <div className='flex items-center gap-2'>
+                            <DoorOpen 
+                              className={cn('h-8 w-8', isOpen ? 'text-green-500': 'text-muted-foreground', hasAlarm && 'text-red-500')}
+                            />
+
+                            <div>
+                              <p className='font-medium'>{isOpen ? 'Open': 'Closed'}</p>
+                              <p className='text-xs text-muted-foreground'>
+                                Ultima activitate:{" "}
+                                {doorData?.timestamp ? format(new Date(doorData.timestamp), "HH:mm"): 'Unknown'}
+                              </p>
+                            </div>
+                          </div>
+
+                          <Badge variant={isOpen ? 'default': 'outline'}>
+                              {doorData?.associatedOrder || "No Order"}
+                            </Badge>
+                        </div>
+                      </CardContent>
                     </Card>
                   )
                 })}
@@ -139,7 +166,42 @@ function DoorActivityTable({ activities, loading }: { activities: any[]; loading
             </TableHeader>
 
             <TableBody>
-              
+              {activities && activities.length > 0 ? (
+                activities.map((activity, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{format(new Date(activity.timestamp), 'HH:mm:ss')}</TableCell>
+                    <TableCell>Door {activity.doorId.replace('D', '')}</TableCell>
+
+                    <TableCell>
+                      <Badge variant={activity.type === 'open' ? 'default': activity.type === 'close' ? 'outline': 'destructive'}>
+                        {activity.type === 'open' ? 'Door Open' : activity.type === 'close' ? 'Door Close' : 'Alarm'}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell>{activity.user}</TableCell>
+                    <TableCell>{activity.associatedOrder || 'N/A'}</TableCell>
+                    <TableCell>{activity.duration || 'N/A'}</TableCell>
+                    <TableCell>
+                      {activity.hasAlarm ? (
+                        <Badge variant='destructive'>Alarm</Badge>
+                      ) : (
+                        <Badge variant='outline'>Normal</Badge>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ):(
+                <TableRow>
+                  <TableCell colSpan={7} className='text-center py-8'>
+                    <div className='flex flex-col items-center justify-center text-muted-foreground'>
+                      <DoorOpen className='h-8 w-8 mb-2' />
+                      <p>Nu a fost găsită nicio activitate pentru această dată</p>
+                    </div>
+                  </TableCell>
+
+                  
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         )}
