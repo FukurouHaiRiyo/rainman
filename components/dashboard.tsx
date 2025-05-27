@@ -31,11 +31,11 @@ import { useToast } from "@/hooks/use-toast"
 import InventoryOverview from "@/components/inventory/overview"
 import OrdersOverview from "@/components/orders/overview"
 import DriverCheckIn from "@/components/drivers/check-in"
-// import IncidentReport from "@/components/incidents/report"
+import IncidentReport from "@/components/incident/report";
 import ProductionTimeline from "@/components/production/timeline"
 import DoorActivity from "@/components/doors/activity"
 import OrderCalendar from "@/components/calendar/scheduler"
-// import EmployeeScheduler from "@/components/employees/scheduler"
+import EmployeeScheduler from "@/components/employees/scheduler"
 // import DocumentGenerator from "@/components/documents/generator"
 import Navbar from '@/components/Navbar'
 // import { useUserRole } from "@/contexts/user-context"
@@ -144,7 +144,7 @@ export default function Dashboard() {
                 <DriverCheckIn />
               </TabsContent>
               <TabsContent value="incidents" className="space-y-4">
-                {/* <IncidentReport /> */}
+                <IncidentReport />
               </TabsContent>
               <TabsContent value="production" className="space-y-4">
                 <ProductionTimeline />
@@ -156,7 +156,7 @@ export default function Dashboard() {
                 <OrderCalendar />
               </TabsContent>
               <TabsContent value="employees" className="space-y-4">
-                {/* <EmployeeScheduler /> */}
+                <EmployeeScheduler />
               </TabsContent>
               <TabsContent value="documents" className="space-y-4">
                 {/* <DocumentGenerator /> */}

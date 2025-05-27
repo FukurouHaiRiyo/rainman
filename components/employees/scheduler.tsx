@@ -89,7 +89,7 @@ const EmployeeScheduler = () => {
                     </SelectTrigger>
 
                     <SelectContent>
-                      {employees.map((employee: any) => (
+                      {employees?.map((employee: any) => (
                         <SelectItem key={employee.id} value={employee.id}>
                           {employee.name}
                         </SelectItem>
@@ -191,7 +191,7 @@ const EmployeeScheduler = () => {
               </thead>
 
               <tbody>
-                {employees.map((employee: any) => (
+                {employees?.map((employee: any) => (
                   <tr key={employee.id}>
                     <td className='border p-2'>
                       <div className='flex items-center gap-2'>
