@@ -24,7 +24,7 @@ import {
   UserCog,
 } from "lucide-react"
 
-export function Sidebar() {
+export function Sidebar1() {
   const pathname = usePathname()
   const { user, isLoaded } = useUser()
   const { signOut } = useClerk()
@@ -60,7 +60,7 @@ export function Sidebar() {
     {
       name: "overview",
       label: "Overview",
-      href: "/dashboard",
+      href: "/Admin",
       icon: LayoutDashboard,
     },
     {

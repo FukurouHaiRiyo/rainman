@@ -14,6 +14,8 @@ import {
   Truck,
   Users,
   Settings,
+  LogOut,
+  UserCircle,
 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -26,6 +28,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/sidebar"
+import { Sidebar1 } from "@/components/dashboard/sidebar"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import InventoryOverview from "@/components/inventory/overview"
@@ -41,12 +44,15 @@ import Navbar from '@/components/Navbar'
 // import { useUserRole } from "@/contexts/user-context"
 import { canViewSidebarItem } from "@/app/lib/roles"
 import { useUserRole } from "@/context/user-context"
+import { useClerk } from "@clerk/nextjs"
+import Link from "next/link"
 // import RoleDashboard from "@/components/dashboards/role-dashboard"
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview")
   const { toast } = useToast()
   const { role, isLoading } = useUserRole()
+  const { signOut } = useClerk()
 
   const handleGeneratePdf = () => {
     toast({
@@ -72,7 +78,24 @@ export default function Dashboard() {
   ]
 
   // Filter sidebar items based on user role
-  const filteredSidebarItems = sidebarItems.filter((item) => canViewSidebarItem(role, item.id))
+  const filteredSidebarItems = sidebarItems.filter((item) => canViewSidebarItem(role, item.id));
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      toast({
+        title: "Success",
+        description: "You have been logged out",
+      })
+    } catch (error) {
+      console.error("Error signing out:", error)
+      toast({
+        title: "Error",
+        description: "Failed to sign out",
+        variant: "destructive",
+      })
+    }
+  }
 
   return (
     <SidebarProvider>
@@ -116,8 +139,21 @@ export default function Dashboard() {
                   Generate Reports
                 </Button>
               </div>
+
+              <Link href="/user-profile">
+                <Button variant="ghost" className="w-full justify-start">
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  Profile
+                </Button>
+              </Link>
+              <Button variant="ghost" className="w-full justify-start" onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </Button>
             </SidebarFooter>
           </Sidebar> */}
+
+          {role === 'admin' && <Sidebar1 />}
           <div className="flex-1 p-6">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
               <div className="flex items-center justify-between">

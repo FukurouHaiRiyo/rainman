@@ -121,8 +121,102 @@ const UsersPage = () => {
   }
 
   return (
-    <div>
-      
+    <div className='p-6'>
+      <div className='flex items-center justify-between mb-6'>
+        <h1 className='text-2xl font-bold'> Managementul utilizatorilor </h1>
+
+        <div className='flex gap-2'>
+          <Button onClick={fetchUsers} variant='outline' size='sm' disabled={loading}>
+            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+
+          <AddUserDialog onUserAdded={handleUserAdded} />
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle> Utilizatori: ({users.length})</CardTitle>
+          <CardDescription> Gestionați rolurile și permisiunile utilizatorilor </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          {users.length === 0 ? (
+            <div className='text-center py-8'>
+              <p className='text-muted-foreground'>Nu s-au găsit utilizatori</p>
+            </div>
+          ): (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>User</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Last Sign In</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {users.map((user: any) => (
+                  <TableRow key={user.id}>
+                    <TableCell className='font-medium'>
+                      <div className='flex items-center gap-2'>
+                        <img 
+                          src={user.imageUrl || '/placeholder.svg?height=32&width=32'}
+                          alt={`${user.firstName} ${user.lastName}`}
+                          className='w-8 h-8 rounded-full'
+                        />
+
+                        <span>
+                          {user.firstName} {user.lastName}
+                        </span>
+                      </div>
+                    </TableCell>
+
+                    <TableCell> {user.email} </TableCell>
+
+                    <TableCell>
+                      <Badge variant='outline'>{getRoleName(user.role as any)}</Badge>
+                    </TableCell>
+
+                    <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+
+                    <TableCell>
+                      {user.lastSignInAt ? new Date(user.lastSignInAt).toLocaleDateString() : 'Never'}
+                    </TableCell>
+
+                    <TableCell>
+                      <div className='flex items-center gap-2'>
+                        <Select
+                          defaultValue={user.role}
+                          onValueChange={(value) => updateUserRole(user.id, value)}
+                          disabled={updating === user.id}
+                        >
+                          <SelectTrigger className='w-[140px]'>
+                            <SelectValue placeholder='Select role' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value='admin'>Administrator</SelectItem>
+                            <SelectItem value='manager'>Warehouse Manager</SelectItem>
+                            <SelectItem value='inventory'>Inventory Specialist</SelectItem>
+                            <SelectItem value='driver'>Driver</SelectItem>
+                            <SelectItem value='employee'>Employee</SelectItem>
+                            <SelectItem value='guest'>Guest</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {updating === user.id && <Loader2 className='h-4 w-4 animate-spin text-primary' />}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

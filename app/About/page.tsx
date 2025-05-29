@@ -5,7 +5,6 @@ import React, {useState} from 'react';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Navbar from '@/components/Navbar';
-import ContactUs from '../Contact/page';
 
 const AboutUs = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -217,8 +216,6 @@ const AboutUs = () => {
           />
         </div>
       </div>
-
-      <ContactUs/>
     </div>
   )
 }

@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import { initializeApp, getApps, getApp } from "firebase/app"
+import { initializeApp, getApps, getApp } from 'firebase/app'
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -8,10 +8,10 @@ import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
   type User,
-} from "firebase/auth"
-import { getDatabase, ref, onValue, off, get, set, push, update, remove } from "firebase/database"
-import { getStorage } from "firebase/storage"
-import { useState, useEffect, useCallback } from "react"
+} from 'firebase/auth'
+import { getDatabase, ref, onValue, off, get, set, push, update, remove } from 'firebase/database'
+import { getStorage } from 'firebase/storage'
+import { useState, useEffect, useCallback } from 'react'
 
 // Firebase configuration
 const firebaseConfig = {
@@ -32,11 +32,11 @@ const auth = getAuth(app)
 const db = getDatabase(app)
 const storage = getStorage(app)
 
-console.log("Firebase initialized with config:", {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? "set" : "not set",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? "set" : "not set",
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ? "set" : "not set",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? "set" : "not set",
+console.log('Firebase initialized with config:', {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? 'set' : 'not set',
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? 'set' : 'not set',
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ? 'set' : 'not set',
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? 'set' : 'not set',
 })
 
 // Authentication functions
@@ -93,7 +93,7 @@ export function useUserRole(uid: string | undefined) {
     onValue(userRoleRef, handleData)
 
     return () => {
-      off(userRoleRef, "value", handleData)
+      off(userRoleRef, 'value', handleData)
     }
   }, [uid, db])
 
@@ -114,9 +114,9 @@ export function useFirebaseData(path: string) {
 
   useEffect(() => {
     if (!db) {
-      console.error("Firebase database not initialized")
+      console.error('Firebase database not initialized')
       setLoading(false)
-      setError(new Error("Firebase database not initialized"))
+      setError(new Error('Firebase database not initialized'))
       return () => {}
     }
 
@@ -128,7 +128,7 @@ export function useFirebaseData(path: string) {
       const val = snapshot.val()
       if (val) {
         // Convert Firebase object to array if it's an object with keys
-        if (typeof val === "object" && !Array.isArray(val)) {
+        if (typeof val === 'object' && !Array.isArray(val)) {
           const dataArray = Object.keys(val).map((key) => ({
             id: key,
             ...val[key],
@@ -165,12 +165,12 @@ export const firebaseService = {
   // Create a new item
   create: async (path: string, data: any) => {
     try {
-      if (!db) throw new Error("Firebase not initialized")
+      if (!db) throw new Error('Firebase not initialized')
       const newItemRef = push(ref(db, path))
       await set(newItemRef, data)
       return { success: true, id: newItemRef.key, data: { id: newItemRef.key, ...data } }
     } catch (error) {
-      console.error("Error creating item:", error)
+      console.error('Error creating item:', error)
       return { success: false, error }
     }
   },
@@ -178,14 +178,14 @@ export const firebaseService = {
   // Read a single item
   read: async (path: string, id: string) => {
     try {
-      if (!db) throw new Error("Firebase not initialized")
+      if (!db) throw new Error('Firebase not initialized')
       const snapshot = await get(ref(db, `${path}/${id}`))
       if (snapshot.exists()) {
         return { success: true, data: { id, ...snapshot.val() } }
       }
-      return { success: false, error: new Error("Item not found") }
+      return { success: false, error: new Error('Item not found') }
     } catch (error) {
-      console.error("Error reading item:", error)
+      console.error('Error reading item:', error)
       return { success: false, error }
     }
   },
@@ -193,11 +193,11 @@ export const firebaseService = {
   // Update an existing item
   update: async (path: string, id: string, data: any) => {
     try {
-      if (!db) throw new Error("Firebase not initialized")
+      if (!db) throw new Error('Firebase not initialized')
       await update(ref(db, `${path}/${id}`), data)
       return { success: true, data: { id, ...data } }
     } catch (error) {
-      console.error("Error updating item:", error)
+      console.error('Error updating item:', error)
       return { success: false, error }
     }
   },
@@ -205,11 +205,11 @@ export const firebaseService = {
   // Delete an item
   delete: async (path: string, id: string) => {
     try {
-      if (!db) throw new Error("Firebase not initialized")
+      if (!db) throw new Error('Firebase not initialized')
       await remove(ref(db, `${path}/${id}`))
       return { success: true, id }
     } catch (error) {
-      console.error("Error deleting item:", error)
+      console.error('Error deleting item:', error)
       return { success: false, error }
     }
   },

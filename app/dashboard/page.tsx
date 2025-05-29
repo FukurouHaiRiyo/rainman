@@ -95,7 +95,7 @@ export default function DashboardPage() {
     console.log("Rendering dashboard for role:", userRole)
 
     switch (userRole) {
-      case "admin":
+      case "Administrator":
         return <Dashboard />
       case "manager":
         // return <ManagerDashboard />

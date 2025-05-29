@@ -1,8 +1,7 @@
-export type BRAND = {
-    logo: string;
-    name: string;
-    visitors: string;
-    revenues: string;
-    sales: number;
-    conversions: number;
-}
+export type Brand = {
+  id: number;
+  name: string;
+  href: string;
+  image: string;
+  imageLight?: string;
+};

@@ -1,7 +1,7 @@
 import type React from "react"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
-import { Sidebar } from "@/components/dashboard/sidebar"
+import { Sidebar1 } from "@/components/dashboard/sidebar"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth()
@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="flex h-screen">
-      <Sidebar />
+      <Sidebar1 />
       <main className="flex-1 overflow-auto">{children}</main>
     </div>
   )

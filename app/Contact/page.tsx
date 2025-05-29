@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 import { getDatabase, ref, push } from '@firebase/database';
-import { firebase, db } from '../lib/firebase';
+import { db } from '../lib/firebase';
 import Navbar from '@/components/Navbar';
 
 const ContactUs = () => {
