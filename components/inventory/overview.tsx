@@ -379,7 +379,7 @@ export default function InventoryOverview() {
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the inventory item
-              {selectedItem && <strong> "{selectedItem.name}"</strong>} from the database.
+              {selectedItem && <strong> {selectedItem.name}</strong>} from the database.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

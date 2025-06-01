@@ -492,7 +492,7 @@ const IncidentReport = () => {
             <AlertDialogTitle>Ești sigur?</AlertDialogTitle>
             <AlertDialogDescription>
               Această acțiune nu poate fi anulată. Acest lucru va șterge definitiv raportul incidentului
-              {selectedIncident && <strong> "{selectedIncident.title}"</strong>} din baza de date.
+              {selectedIncident && <strong> {selectedIncident.title}</strong>} din baza de date.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
