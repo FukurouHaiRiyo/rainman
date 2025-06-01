@@ -1,16 +1,10 @@
 import { clerkClient } from "@clerk/clerk-sdk-node"
 import { auth } from "@clerk/nextjs/server"
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { db } from "@/app/lib/firebase"
 import { ref, set } from "firebase/database"
 
-interface RouteParams {
-  params: {
-    userId: string
-  }
-}
-
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
+export async function PATCH(request: Request, context: any) {
   try {
     const { userId: currentUserId } = await auth()
 
@@ -31,7 +25,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Forbidden - Admin access required" }, { status: 403 })
     }
 
-    const { userId } = params
+    const userId = context.params.userId
     const body = await request.json()
     const { role } = body
 

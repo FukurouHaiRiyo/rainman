@@ -2,7 +2,7 @@ import { clerkClient } from "@clerk/clerk-sdk-node"
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 
-export async function POST(request: Request, context: any) {
+export async function POST(request: Request) {
   try {
     const { userId: currentUserId } = await auth()
 
@@ -18,7 +18,8 @@ export async function POST(request: Request, context: any) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    const userId = context.params.userId
+    const body = await request.json()
+    const { userId } = body
 
     // Get the user to send invitation to
     const targetUser = await clerkClient.users.getUser(userId)
