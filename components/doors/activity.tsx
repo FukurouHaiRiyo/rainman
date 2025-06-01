@@ -123,8 +123,8 @@ const DoorActivity = () => {
                           </div>
 
                           <Badge variant={isOpen ? 'default': 'outline'}>
-                              {doorData?.associatedOrder || "No Order"}
-                            </Badge>
+                            {doorData?.associatedOrder || "No Order"}
+                          </Badge>
                         </div>
                       </CardContent>
                     </Card>

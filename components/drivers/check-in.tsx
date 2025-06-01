@@ -24,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { firebaseService } from '@/app/lib/firebase';
 import { generateDriverPaperwork } from '@/app/lib/documentGeneration';
+import { useUserRole } from '@/context/user-context';
 
 const DriverCheckIn = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,6 +32,7 @@ const DriverCheckIn = () => {
   const { data: drivers, loading, refreshData } = useFirebaseData('drivers');
   const [open, setIsOpen] = useState(false);
   const { toast } = useToast();
+  const { role, isLoading } = useUserRole()
 
   // Form State
   const [formData, setFormData] = useState({
@@ -258,10 +260,12 @@ const DriverCheckIn = () => {
         <div className='flex items-center gap-2'>
           <Dialog open={open} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button>
-                <UserCheck className='mr-2 h-4 w-4' />
-                Înregistrare șofer
-              </Button>
+              {role !== 'admin' ? (
+                <Button>
+                  <UserCheck className='mr-2 h-4 w-4' />
+                  Înregistrare șofer
+                </Button>
+              ) : null}
             </DialogTrigger>
 
             <DialogContent className='sm:max-w-[425px]'>

@@ -20,6 +20,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useUserRole } from '@/context/user-context';
 
 const EmployeeScheduler = () => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -27,6 +28,8 @@ const EmployeeScheduler = () => {
   const { data: employees, loading } = useFirebaseData('employees');
   const { data: shifts } = useFirebaseData('shifts');
   const { toast } = useToast();
+
+  const { role, isLoading } = useUserRole()
 
   const startDate = startOfWeek(currentDate, { weekStartsOn: 1 }) // Start from Monday
   const endDate = endOfWeek(currentDate, { weekStartsOn: 1 }) // End on Sunday
@@ -65,10 +68,10 @@ const EmployeeScheduler = () => {
         <div className='flex items-center gap-2'>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button>
+            { role !== 'admin' ? (<Button>
                 <Plus className='mr-2 h-4 w-4' />
                 Add shift
-              </Button>
+              </Button>): null}
             </DialogTrigger>
 
             <DialogContent className='sm:max-w-[500px]'>

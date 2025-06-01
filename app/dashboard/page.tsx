@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 import Dashboard from "@/components/dashboard"
 import { UserProvider } from "@/context/user-context"
+import GuestDashboard from "./guest/page";
 
 export default function DashboardPage() {
   const { user, isLoaded } = useUser()
@@ -95,7 +96,7 @@ export default function DashboardPage() {
     console.log("Rendering dashboard for role:", userRole)
 
     switch (userRole) {
-      case "Administrator":
+      case "admin":
         return <Dashboard />
       case "manager":
         // return <ManagerDashboard />
@@ -107,7 +108,7 @@ export default function DashboardPage() {
         // return <EmployeeDashboard />
       case "guest":
       default:
-        // return <GuestDashboard />
+        return <GuestDashboard />
     }
   }
 

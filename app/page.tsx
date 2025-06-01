@@ -21,6 +21,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
+  // "admin" | "manager" | "inventory" | "driver" | "employee" | "guest"
   const { userId } = await auth()
 
   // If signed in, redirect to dashboard
