@@ -24,6 +24,7 @@ export async function GET() {
     })
 
     // Map users to a simpler format with role information
+    // @typescript-eslint/no-explicit-any
     const mappedUsers = users.data.map((user: any) => ({
       id: user.id,
       firstName: user.firstName,

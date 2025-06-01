@@ -25,6 +25,7 @@ import { useToast } from '@/hooks/use-toast'
 export default function OrderCalendar() {
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
   const [open, setOpen] = useState(false)
+  // @typescript-eslint/no-unused-vars
   const { data: scheduledOrders, loading } = useFirebaseData('scheduledOrders')
   const { toast } = useToast()
 
@@ -56,12 +57,14 @@ export default function OrderCalendar() {
 
   // Group orders by date and time slot
   const ordersByDay = weekDays.map((day) => {
+    // @typescript-eslint/no-explicit-any
     const dayOrders = scheduledOrders?.filter((order: any) => {
       const orderDate = format(new Date(order.scheduledDate), 'yyyy-MM-dd')
       return orderDate === day.fullDate
     })
 
     // Group by time slot (morning, afternoon, evening)
+    // @typescript-eslint/no-explicit-any
     const morning = dayOrders?.filter((order: any) => order.timeSlot === 'morning') || []
     const afternoon = dayOrders?.filter((order: any) => order.timeSlot === 'afternoon') || []
     const evening = dayOrders?.filter((order: any) => order.timeSlot === 'evening') || []
@@ -202,6 +205,7 @@ export default function OrderCalendar() {
                 <h4 className='text-xs font-medium text-muted-foreground mb-1'>Morning</h4>
                 {day.orders.morning.length > 0 ? (
                   <div className='space-y-2'>
+                    {/* @typescript-eslint/no-explicit-any */}
                     {day.orders.morning.map((order: any, i: any) => (
                       <OrderCard key={i} order={order} />
                     ))}
@@ -216,6 +220,7 @@ export default function OrderCalendar() {
                 <h4 className='text-xs font-medium text-muted-foreground mb-1'>Afternoon</h4>
                 {day.orders.afternoon.length > 0 ? (
                   <div className='space-y-2'>
+                    {/* @typescript-eslint/no-explicit-any */}
                     {day.orders.afternoon.map((order: any, i: any) => (
                       <OrderCard key={i} order={order} />
                     ))}
@@ -230,6 +235,7 @@ export default function OrderCalendar() {
                 <h4 className='text-xs font-medium text-muted-foreground mb-1'>Evening</h4>
                 {day.orders.evening.length > 0 ? (
                   <div className='space-y-2'>
+                    {/* @typescript-eslint/no-explicit-any */}
                     {day.orders.evening.map((order: any, i: any) => (
                       <OrderCard key={i} order={order} />
                     ))}

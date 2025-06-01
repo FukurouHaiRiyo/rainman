@@ -16,6 +16,8 @@ import Dashboard from "@/components/dashboard"
 import { UserProvider } from "@/context/user-context"
 import GuestDashboard from "./guest/page";
 
+// @typescript-eslint/no-unused-vars
+// @typescript-eslint/no-explicit-any
 export default function DashboardPage() {
   const { user, isLoaded } = useUser()
   const { toast } = useToast()

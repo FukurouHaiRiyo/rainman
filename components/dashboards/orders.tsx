@@ -21,16 +21,16 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+// import {
+//   AlertDialog,
+//   AlertDialogAction,
+//   AlertDialogCancel,
+//   AlertDialogContent,
+//   AlertDialogDescription,
+//   AlertDialogFooter,
+//   AlertDialogHeader,
+//   AlertDialogTitle,
+// } from '@/components/ui/alert-dialog';
 
 const OrdersOverview = ({ detailed = false }: { detailed?: boolean }) => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -75,6 +75,7 @@ const OrdersOverview = ({ detailed = false }: { detailed?: boolean }) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
+  // @typescript-eslint/no-explicit-any
   const handleEdit = (order: any) => {
     setSelectedOrder(order);
     setFormData({
@@ -90,33 +91,34 @@ const OrdersOverview = ({ detailed = false }: { detailed?: boolean }) => {
     setOpen(true);
   }
 
+  // @typescript-eslint/no-explicit-any
   const handleDelete = (order: any) => {
     setSelectedOrder(order);
     setDeleteDialogOpen(true);
   }
 
-  const confirmDelete = async () => {
-    if (!selectedOrder) return
+  // const confirmDelete = async () => {
+  //   if (!selectedOrder) return
 
-    const result = await firebaseService.delete('orders', selectedOrder.id)
+  //   const result = await firebaseService.delete('orders', selectedOrder.id)
 
-    if (result.success) {
-      toast({
-        title: 'Order deleted',
-        description: 'The order has been deleted successfully.',
-      })
-      refreshData()
-    } else {
-      toast({
-        title: 'Error',
-        description: 'Failed to delete the order. Please try again.',
-        variant: 'destructive',
-      })
-    }
+  //   if (result.success) {
+  //     toast({
+  //       title: 'Order deleted',
+  //       description: 'The order has been deleted successfully.',
+  //     })
+  //     refreshData()
+  //   } else {
+  //     toast({
+  //       title: 'Error',
+  //       description: 'Failed to delete the order. Please try again.',
+  //       variant: 'destructive',
+  //     })
+  //   }
 
-    setDeleteDialogOpen(false)
-    setSelectedOrder(null)
-  }
+  //   setDeleteDialogOpen(false)
+  //   setSelectedOrder(null)
+  // }
 
   const handleSubmit = async () => {
     // Validate form
@@ -181,6 +183,7 @@ const OrdersOverview = ({ detailed = false }: { detailed?: boolean }) => {
     }
   }
 
+  // @typescript-eslint/no-explicit-any
   const filteredOrders =
     orders?.filter((order: any) => {
       const matchesSearch =
@@ -210,6 +213,7 @@ const OrdersOverview = ({ detailed = false }: { detailed?: boolean }) => {
               </div>
             ): (
               <div className='space-y-2'>
+                {/* @typescript-eslint/no-explicit-any */}
                 {recentOrders.map((order: any) => (
                   <div key={order.id} className='flex items-center justify-between p-2 border rounded-md'>
                     <div className='flex items-center gap-2'>
@@ -419,6 +423,7 @@ const OrdersOverview = ({ detailed = false }: { detailed?: boolean }) => {
   )
 }
 
+// @typescript-eslint/no-explicit-any
 function OrdersTable({
   orders, loading, onEdit, onDelete
 }: {

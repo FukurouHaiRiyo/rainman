@@ -7,6 +7,7 @@ import StatsOverview from "@/components/stats/overview"
 import OrdersOverview from "@/components/orders/overview"
 
 export default function AdminDashboard() {
+  // @typescript-eslint/no-unused-vars
   const { data: stats, loading } = useFirebaseData("stats")
 
   return (

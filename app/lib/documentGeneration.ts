@@ -5,6 +5,7 @@ import JsBarcode from "jsbarcode"
 import QRCode from "qrcode"
 
 // Generate driver paperwork
+// @typescript-eslint/no-explicit-any
 export async function generateDriverPaperwork(driver: any): Promise<Blob> {
   const doc = new jsPDF()
 
@@ -68,6 +69,7 @@ export async function generateDriverPaperwork(driver: any): Promise<Blob> {
 }
 
 // Generate pallet tag
+// @typescript-eslint/no-explicit-any
 export async function generatePalletTag(palletInfo: any): Promise<Blob> {
   const doc = new jsPDF({
     orientation: "landscape",
@@ -102,6 +104,7 @@ export async function generatePalletTag(palletInfo: any): Promise<Blob> {
 }
 
 // Generate shipment plaque
+// @typescript-eslint/no-explicit-any
 export async function generateShipmentPlaque(shipmentInfo: any): Promise<Blob> {
   const doc = new jsPDF()
 

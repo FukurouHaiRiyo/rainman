@@ -6,6 +6,7 @@ import { ref, set, push, remove, update, get } from "firebase/database"
 // Enhance the firebaseService with better error handling and return values
 export const firebaseService = {
   // Create a new item
+  // @typescript-eslint/no-explicit-any
   create: async (path: string, data: any) => {
     try {
       if (!db) throw new Error("Firebase not initialized")
@@ -34,6 +35,7 @@ export const firebaseService = {
   },
 
   // Update an existing item
+  // @typescript-eslint/no-explicit-any
   update: async (path: string, id: string, data: any) => {
     try {
       if (!db) throw new Error("Firebase not initialized")

@@ -2,6 +2,8 @@ import { clerkClient } from '@clerk/clerk-sdk-node';
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export async function POST(request: Request) {
   const { userId } = await auth();
 
@@ -18,6 +20,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+    // @typescript-eslint/no-unused-vars
     const { email, firstName, lastName, role, sendInvitation = true } = body;
 
     if (!email || !firstName || !lastName || !role) {

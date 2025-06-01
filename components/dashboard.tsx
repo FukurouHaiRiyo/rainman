@@ -3,7 +3,6 @@
 import { useState } from "react"
 import {
   BarChart3,
-  Box,
   Calendar,
   ClipboardList,
   Clock,
@@ -14,19 +13,10 @@ import {
   Truck,
   Users,
   Settings,
-  LogOut,
-  UserCircle,
 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   SidebarProvider,
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarFooter,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
 } from "@/components/sidebar"
 import { Sidebar1 } from "@/components/dashboard/sidebar"
 import { Button } from "@/components/ui/button"

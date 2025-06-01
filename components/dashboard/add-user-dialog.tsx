@@ -68,6 +68,7 @@ const AddUserDialog = ({ onUserAdded }: AddUserDialogProps) => {
 
       setOpen(false);
       onUserAdded();
+      // @typescript-eslint/no-explicit-any
     } catch(error: any) {
       console.log('Error creating user: ', error);
       toast({

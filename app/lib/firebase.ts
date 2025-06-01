@@ -84,6 +84,7 @@ export function useUserRole(uid: string | undefined) {
 
     const userRoleRef = ref(db, `users/${uid}/role`)
 
+    // @typescript-eslint/no-explicit-any
     const handleData = (snapshot: any) => {
       const userRole = snapshot.val()
       setRole(userRole)
@@ -102,6 +103,7 @@ export function useUserRole(uid: string | undefined) {
 
 // Custom hook for Firebase data
 export function useFirebaseData(path: string) {
+  // @typescript-eslint/no-explicit-any
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
@@ -124,6 +126,7 @@ export function useFirebaseData(path: string) {
     const dbRef = ref(db, path)
 
     // Listen for changes
+    // @typescript-eslint/no-explicit-any
     const handleData = (snapshot: any) => {
       const val = snapshot.val()
       if (val) {
@@ -163,6 +166,7 @@ export function useFirebaseData(path: string) {
 // Firebase service for CRUD operations
 export const firebaseService = {
   // Create a new item
+  // @typescript-eslint/no-explicit-any
   create: async (path: string, data: any) => {
     try {
       if (!db) throw new Error('Firebase not initialized')
@@ -191,6 +195,7 @@ export const firebaseService = {
   },
 
   // Update an existing item
+  // @typescript-eslint/no-explicit-any
   update: async (path: string, id: string, data: any) => {
     try {
       if (!db) throw new Error('Firebase not initialized')

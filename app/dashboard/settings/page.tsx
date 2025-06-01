@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import { getRoleName } from '@/app/lib/roles';
 import Link from 'next/link';
 
+// @typescript-eslint/no-explicit-any
 const Settings = () => {
   const { user, isLoaded } = useUser();
   const [userRole, setUserRole] = useState<string | null>(null);

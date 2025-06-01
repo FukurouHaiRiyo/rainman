@@ -2,10 +2,9 @@
 
 import React from 'react';
 
-import { Truck, DoorOpen, Calendar, Clock } from 'lucide-react';
+import { Truck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirebaseData } from '@/app/lib/firebase';
-import { Badge } from '@/components/ui/badge';
 
 const DriverCoordinatorDashboard = () => {
   const { data: drivers } = useFirebaseData('drivers');
@@ -13,19 +12,23 @@ const DriverCoordinatorDashboard = () => {
   const { data: scheduledOrders } = useFirebaseData('scheduledOrders');
 
   // Calculate driver metrics
+  // @typescript-eslint/no-explicit-any
   const checkedInDrivers = drivers?.filter((driver: any) => driver.status === 'checked-in')|| [];
+  // @typescript-eslint/no-explicit-any
   const loadingDrivers = drivers?.filter((driver: any) => driver.status === 'loading') || [];
+  // @typescript-eslint/no-explicit-any
   const waitingDrivers = drivers?.filter((driver: any) => driver.status === 'waiting') || [];
 
   // Get active doors 
-  const activeDoors = doorActivity?.filter((door: any) => door.isLatest && door.type === 'open') || [];
+  // const activeDoors = doorActivity?.filter((door: any) => door.isLatest && door.type === 'open') || [];
 
   // Get today's scheduled orders
   const today = new Date().toISOString().split('T')[0];
-  const todaysScheduledOrders = scheduledOrders?.filter((order: any) => {
-    const orderDate = new Date(order.scheduledDate).toISOString().split('T')[0];
-    return orderDate === today;
-  }) || [];
+  // @typescript-eslint/no-explicit-any
+  // const todaysScheduledOrders = scheduledOrders?.filter((order: any) => {
+  //   const orderDate = new Date(order.scheduledDate).toISOString().split('T')[0];
+  //   return orderDate === today;
+  // }) || [];
 
   return (
     <div className='space-y-4'>

@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import { db } from "@/app/lib/firebase"
 import { ref, set, get } from "firebase/database"
 
+// @typescript-eslint/no-unused-vars
 export async function POST(request: Request) {
   const { userId } = await auth()
 

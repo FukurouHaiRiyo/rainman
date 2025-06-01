@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ThemeToggler from './ThemeToggler';
 import menuData from './menuData';
 
 const Header = () => {
@@ -31,6 +30,7 @@ const Header = () => {
 
   // Submenu handler
   const [openIndex, setOpenIndex] = useState(-1);
+  // @typescript-eslint/no-explicit-any
   const handleSubmenu = (index: any) => {
     if(openIndex === index) {
       setOpenIndex(-1);

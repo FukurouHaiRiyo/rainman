@@ -144,11 +144,13 @@ export function Sidebar1() {
     <div className="w-64 bg-muted h-screen flex flex-col border-r">
       <div className="p-4 border-b">
         <h2 className="text-xl font-bold">WMS Pro</h2>
+        {/* @typescript-eslint/no-explicit-any */}
         <p className="text-sm text-muted-foreground">{getRoleName(userRole as any)}</p>
       </div>
       <nav className="flex-1 p-4 space-y-1 overflow-auto">
         {menuItems.map((item) => {
           // Check if user can view this sidebar item
+          // @typescript-eslint/no-explicit-any
           if (item.name !== "users" && !canViewSidebarItem(userRole as any, item.name)) {
             return null
           }

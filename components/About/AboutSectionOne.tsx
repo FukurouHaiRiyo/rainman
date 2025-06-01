@@ -10,6 +10,7 @@ const checkIcon = (
 )
 
 const AboutSectionOne = () => {
+  // @typescript-eslint/no-explicit-any
   const List = ({ text }: any) => (
     <p className='text-body-color mb-5 flex items-center text-lg font-medium'>
       <span className='bg-primary/10 text-primary mr-4 flex h-[30px] w-[30px] items-center justify-center rounded-md'>

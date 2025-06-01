@@ -24,6 +24,7 @@ interface User {
   lastSignInAt: string | null
 }
 
+// @typescript-eslint/no-explicit-any
 const UsersPage = () => {
   const { user, isLoaded } = useUser();
   const router = useRouter();

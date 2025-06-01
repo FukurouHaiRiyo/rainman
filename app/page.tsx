@@ -1,8 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
-import AboutSectionOne from '@/components/About/AboutSectionOne';
-import AboutSectionTwo from '@/components/About/AboutSectionTwo';
 import Blog from '@/components/Blog/page';
 // import Brands from '@/components/Brands';
 import ScrollUp from '@/components/Common/ScrollUp';
@@ -33,7 +31,7 @@ export default async function Home() {
   // redirect('/sign-in')
   return (
     <>
-    
+
       <ScrollUp />
       <Hero />
       {/* <Features /> */}

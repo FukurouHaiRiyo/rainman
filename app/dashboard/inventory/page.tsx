@@ -10,6 +10,7 @@ export default function InventoryDashboard() {
   const { data: inventory } = useFirebaseData('inventory');
 
   // calculate inventory metrics
+  // @typescript-eslint/no-explicit-any
   type InventoryItem = { status: string; [key: string]: any };
 
   const lowStockItems = inventory?.filter((item: InventoryItem) => item.status === 'low-stock') || [];
@@ -108,6 +109,7 @@ export default function InventoryDashboard() {
           <CardContent>
             <div className='space-y-4'>
               {lowStockItemsToReorder.length > 0 ? (
+                // @typescript-eslint/no-explicit-any
                 lowStockItemsToReorder.map((item: any, i: any) => (
                   <div key={i} className='flex items-center justify-between border-b pb-2'>
                     <div>

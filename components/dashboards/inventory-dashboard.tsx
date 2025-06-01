@@ -1,41 +1,42 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Layers, AlertTriangle, ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useFirebaseData } from '@/app/lib/firebase'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { canViewSidebarItem } from "@/app/lib/roles"
-import { useUserRole } from "@/context/user-context"
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+// import { canViewSidebarItem } from "@/app/lib/roles"
+// import { useUserRole } from "@/context/user-context"
 
-import {
-  BarChart3,
-  Box,
-  Calendar,
-  ClipboardList,
-  Clock,
-  DoorOpen,
-  FileText,
-  Package,
-  Truck,
-  Users,
-  Settings,
-} from "lucide-react"
+// import {
+//   BarChart3,
+//   Box,
+//   Calendar,
+//   ClipboardList,
+//   Clock,
+//   DoorOpen,
+//   FileText,
+//   Package,
+//   Truck,
+//   Users,
+//   Settings,
+// } from "lucide-react"
 
-import InventoryOverview from "@/components/inventory/overview"
-import OrdersOverview from "@/components/orders/overview"
-import DriverCheckIn from "@/components/drivers/check-in"
-import IncidentReport from "@/components/incident/report";
-import ProductionTimeline from "@/components/production/timeline"
-import DoorActivity from "@/components/doors/activity"
-import OrderCalendar from "@/components/calendar/scheduler"
-import EmployeeScheduler from "@/components/employees/scheduler"
+// import InventoryOverview from "@/components/inventory/overview"
+// import OrdersOverview from "@/components/orders/overview"
+// import DriverCheckIn from "@/components/drivers/check-in"
+// import IncidentReport from "@/components/incident/report";
+// import ProductionTimeline from "@/components/production/timeline"
+// import DoorActivity from "@/components/doors/activity"
+// import OrderCalendar from "@/components/calendar/scheduler"
+// import EmployeeScheduler from "@/components/employees/scheduler"
 
 export default function InventoryDashboard() {
   const { data: inventory } = useFirebaseData('inventory');
 
   // calculate inventory metrics
+  // @typescript-eslint/no-explicit-any
   type InventoryItem = { status: string; [key: string]: any };
 
   const lowStockItems = inventory?.filter((item: InventoryItem) => item.status === 'low-stock') || [];
@@ -135,6 +136,7 @@ export default function InventoryDashboard() {
             <CardContent>
               <div className='space-y-4'>
                 {lowStockItemsToReorder.length > 0 ? (
+                  // @typescript-eslint/no-explicit-any
                   lowStockItemsToReorder.map((item: any, i: any) => (
                     <div key={i} className='flex items-center justify-between border-b pb-2'>
                       <div>
