@@ -2,11 +2,9 @@ import { clerkClient } from '@clerk/clerk-sdk-node';
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export async function POST(
   request: Request,
-  context: { params: { userId: string } }
+  { params }: { params: { userId: string } }
 ) {
   const { userId: currentUserId } = await auth();
 
@@ -22,9 +20,8 @@ export async function POST(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { userId } = context.params;
-
-    const targetUser = await clerkClient.users.getUser(userId);
+    const targetUserId = params.userId;
+    const targetUser = await clerkClient.users.getUser(targetUserId);
     const userEmail = targetUser.emailAddresses[0]?.emailAddress;
 
     if (!userEmail) {
@@ -34,7 +31,7 @@ export async function POST(
     await clerkClient.invitations.createInvitation({
       emailAddress: userEmail,
       publicMetadata: targetUser.publicMetadata,
-      redirectUrl: `${process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || '/dashboard'}`,
+      redirectUrl: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || '/dashboard',
     });
 
     return NextResponse.json({ success: true, message: 'Invitation sent successfully' });

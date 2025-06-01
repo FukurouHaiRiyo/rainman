@@ -3,6 +3,10 @@ const nextConfig = {
     images: {
         dangerouslyAllowSVG: true,
         domains: ['eu.ui-avatars.com']
+    },
+
+    experimental: {
+        appDir: true,
     }
 };
 
