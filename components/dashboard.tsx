@@ -164,7 +164,7 @@ export default function Dashboard() {
                 <InventoryOverview />
               </TabsContent>
               <TabsContent value="orders" className="space-y-4">
-                <OrdersOverview detailed />
+                <OrdersOverview />
               </TabsContent>
               <TabsContent value="drivers" className="space-y-4">
                 <DriverCheckIn />

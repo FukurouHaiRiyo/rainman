@@ -34,7 +34,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 // @typescript-eslint/no-explicit-any
 // @typescript-eslint/no-unused-vars
-const OrdersOverview = ({ detailed = true }: { detailed?: boolean }) => {
+const OrdersOverview = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [orderType, setOrderType] = useState('all')
   const { data: orders, loading, refreshData } = useFirebaseData('orders')
@@ -195,63 +195,6 @@ const OrdersOverview = ({ detailed = true }: { detailed?: boolean }) => {
     }) || [];
 
   const recentOrders = orders?.slice(0, 5) || [];
-
-  if (!detailed) {
-    return (
-      <div className='space-y-4'>
-        {loading ? (
-          <div className='flex items-center justify-center p-8'>
-            <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
-          </div>
-        ): (
-          <div>
-            {recentOrders.length === 0 ? (
-              <div className='flex flex-col items-center justify-center text-muted-foreground py-8'>
-                <Package className='h-8 w-8 mb-2' />
-                <p> No package order </p>
-              </div>
-            ): (
-              <div className='space-y-2'>
-                {recentOrders.map((order: any) => (
-                  <div key={order.id} className='flex items-center justify-between p-2 border rounded-md'>
-                    <div className='flex items-center gap-2'>
-                      {order.type === 'inbound' ? (
-                        <Truck className='h-4 w-4 text-green-500' />
-                      ): (
-                        <Package className='h-4 w-4 text-blue-500'/>
-                      )}
-
-                      <div>
-                        <p className='text-sm font-medium'>{order.id}</p>
-                        <p className='text-xs text-muted-foreground'>{order.customer}</p>
-                      </div>
-                    </div>
-
-                    <div className='flex items-center gap-2'>
-                      <Badge
-                        variant={
-                          order.status === 'completed'
-                            ? 'default'
-                            : order.status === 'processing'
-                              ? 'secondary'
-                              : order.status === 'pending'
-                                ? 'outline'
-                                : 'destructive'
-                        }
-                      >
-                        {order.status}
-                      </Badge>
-                      <span className='text-xs text-muted-foreground'>{order.date}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}  
-          </div>
-        )}
-      </div>
-    );
-  }
 
   return (
     <>
