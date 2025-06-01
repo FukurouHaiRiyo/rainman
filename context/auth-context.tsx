@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import type { User } from "firebase/auth"
 import { ref, get, set } from "firebase/database"
-import { auth, database, onAuthStateChanged } from "@/app/lib/firebase";
+import { auth, db, onAuthStateChanged } from "@/app/lib/firebase";
 
 // Define user roles
 export type UserRole = "admin" | "manager" | "inventory" | "driver" | "employee" | "guest"
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (user) {
         try {
           // Fetch user data from the database
-          const userRef = ref(database, `users/${user.uid}`)
+          const userRef = ref(db, `users/${user.uid}`)
           const snapshot = await get(userRef)
 
           if (snapshot.exists()) {
