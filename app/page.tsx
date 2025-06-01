@@ -33,6 +33,7 @@ export default async function Home() {
   // redirect('/sign-in')
   return (
     <>
+    
       <ScrollUp />
       <Hero />
       {/* <Features /> */}
