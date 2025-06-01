@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(
   request: Request,
-  { params }: { params: { userId: string } }
+  context: { params: { [key: string]: string } }
 ) {
   const { userId: currentUserId } = await auth();
 
@@ -13,6 +13,7 @@ export async function POST(
   }
 
   try {
+    // Get the current user to check if they're an admin
     const currentUser = await clerkClient.users.getUser(currentUserId);
     const userRole = currentUser.publicMetadata.role as string;
 
@@ -20,7 +21,9 @@ export async function POST(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const targetUserId = params.userId;
+    const targetUserId = context.params.userId;
+
+    // Get the user to send invitation to
     const targetUser = await clerkClient.users.getUser(targetUserId);
     const userEmail = targetUser.emailAddresses[0]?.emailAddress;
 
@@ -28,10 +31,11 @@ export async function POST(
       return NextResponse.json({ error: 'User email not found' }, { status: 400 });
     }
 
+    // Send invitation
     await clerkClient.invitations.createInvitation({
       emailAddress: userEmail,
       publicMetadata: targetUser.publicMetadata,
-      redirectUrl: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || '/dashboard',
+      redirectUrl: `${process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || '/dashboard'}`,
     });
 
     return NextResponse.json({ success: true, message: 'Invitation sent successfully' });
