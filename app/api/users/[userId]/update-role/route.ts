@@ -1,79 +1,85 @@
-import { clerkClient } from '@clerk/clerk-sdk-node'
-import { auth } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
-import { db } from '@/app/lib/firebase'
-import { ref, update } from 'firebase/database'
+import { clerkClient } from "@clerk/clerk-sdk-node"
+import { auth } from "@clerk/nextjs/server"
+import { type NextRequest, NextResponse } from "next/server"
+import { db } from "@/app/lib/firebase"
+import { ref, set } from "firebase/database"
 
-export async function PATCH(request: Request, { params }: { params: { userId: string } }) {
+interface RouteParams {
+  params: {
+    userId: string
+  }
+}
+
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
-    const { userId: targetUserId } = params
-    const { userId } = await auth()
+    const { userId: currentUserId } = await auth()
 
-    console.log('Update role request:', { targetUserId, currentUserId: userId })
-
-    if (!userId) {
-      console.log('No user ID in auth')
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!currentUserId) {
+      console.log("No current user ID found")
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
+
+    console.log("Current user ID:", currentUserId)
 
     // Get the current user to check if they're an admin
-    const currentUser = await clerkClient.users.getUser(userId)
+    const currentUser = await clerkClient.users.getUser(currentUserId)
     const userRole = currentUser.publicMetadata.role as string
 
-    console.log('Current user role:', userRole)
+    console.log("Current user role:", userRole)
 
-    if (userRole !== 'admin') {
-      console.log('User is not admin')
-      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    if (userRole !== "admin") {
+      return NextResponse.json({ error: "Forbidden - Admin access required" }, { status: 403 })
     }
 
-    // Get the new role from the request body
+    const { userId } = params
     const body = await request.json()
     const { role } = body
 
-    console.log('New role to set:', role)
+    console.log("Updating user:", userId, "to role:", role)
 
-    // Validate the role
-    const validRoles = ['admin', 'manager', 'inventory', 'driver', 'employee', 'guest']
+    // Validate role
+    const validRoles = ["admin", "manager", "inventory", "driver", "employee", "guest"]
     if (!validRoles.includes(role)) {
-      console.log('Invalid role:', role)
-      return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
+      return NextResponse.json({ error: "Invalid role" }, { status: 400 })
     }
 
-    // Update the user's role in Clerk
-    console.log('Updating user role in Clerk...')
-    await clerkClient.users.updateUser(targetUserId, {
-      publicMetadata: { role },
+    // Update user role in Clerk
+    await clerkClient.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        role: role,
+      },
     })
 
-    console.log('User role updated in Clerk successfully')
+    console.log("Updated user role in Clerk successfully")
 
-    // Also update the user's role in Firebase for consistency
+    // Also update in Firebase for consistency (non-critical)
     try {
-      console.log('Updating user role in Firebase...')
-      await update(ref(db, `users/${targetUserId}`), { role })
-      console.log('User role updated in Firebase successfully')
+      const userRef = ref(db, `users/${userId}`)
+      await set(userRef, {
+        role: role,
+        updatedAt: new Date().toISOString(),
+        updatedBy: currentUserId,
+      })
+      console.log("Updated user role in Firebase successfully")
     } catch (firebaseError) {
-      console.error('Firebase update failed (non-critical):', firebaseError)
+      console.warn("Failed to update role in Firebase (non-critical):", firebaseError)
       // Don't fail the request if Firebase update fails
     }
 
-    return NextResponse.json({ success: true, role })
-  } catch (error) {
-    console.error('Error updating user role:', error)
-
-    // Return more specific error information
-    if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          error: 'Failed to update user role',
-          details: error.message,
-          stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-        },
-        { status: 500 },
-      )
-    }
-
-    return NextResponse.json({ error: 'Unknown error occurred' }, { status: 500 })
+    return NextResponse.json({
+      success: true,
+      message: "User role updated successfully",
+      userId,
+      role,
+    })
+  } catch (error: any) {
+    console.error("Error updating user role:", error)
+    return NextResponse.json(
+      {
+        error: "Failed to update user role",
+        details: error.message,
+      },
+      { status: 500 },
+    )
   }
 }
