@@ -3,10 +3,9 @@ layer(base);
 
 @import 'tailwindcss';
 
-@custom-variant dark (&:is(.dark *));
+/* Removed unsupported @custom-variant dark (&:is(.dark *)); */
 
-@theme {
-  --breakpoint-*: initial;
+:root {
   --breakpoint-xs: 450px;
   --breakpoint-sm: 575px;
   --breakpoint-md: 768px;
@@ -59,7 +58,7 @@ layer(base);
   --drop-shadow-three: 0px 5px 15px rgba(6, 8, 15, 0.05);
 }
 
-@utility container {
+.container {
   margin-inline: auto;
   padding-inline: 1rem;
 }
@@ -82,54 +81,36 @@ layer(base);
   }
 }
 
-@utility sticky {
-  & .header-logo {
-    @apply py-5 lg:py-2;
-  }
-
-  & .menu-scroll.active {
-    @apply opacity-70;
+.sticky .header-logo {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+@media (min-width: 1024px) {
+  .sticky .header-logo {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 }
 
-@utility header-logo {
-  .sticky & {
-    @apply py-5 lg:py-2;
-  }
+.sticky .menu-scroll.active {
+  opacity: 0.7;
 }
 
-@utility menu-scroll {
-  .sticky &.active {
-    @apply opacity-70;
-  }
-}
-
-@utility active {
-  .sticky &.menu-scroll {
-    @apply opacity-70;
-  }
-}
-
-@utility dot {
-  input#togglePlan:checked ~ & {
-    @apply translate-x-full;
-  }
-}
-
-@utility box {
-  input#checkboxLabel:checked ~ & span {
-    @apply opacity-100;
-  }
-}
+/* Removed unsupported @utility header-logo and @utility dot at-rules.
+   The .sticky .header-logo and .sticky .menu-scroll.active selectors are already defined above.
+   If you need to apply additional styles, use standard CSS or Tailwind layers. */
 
 @layer base {
   body {
-    font-family: "Inter", sans-serif;
-  }
+input#togglePlan:checked ~ .dot {
+  transform: translateX(100%);
 }
-
-@layer components {
   input[type="checkbox"]:checked ~ label span svg {
-    @apply inline-flex;
+    display: inline-flex;
   }
+  
+input#checkboxLabel:checked ~ .box span {
+  opacity: 1;
+}
+}
 }
