@@ -41,11 +41,10 @@ const Header = () => {
   return (
     <>
       <header
-        className={`header top-0 left-0 z-40 flex w-full items-center ${
-          sticky
-            ? 'dark:bg-gray-dark dark:shadow-sticky-dark shadow-sticky fixed z-9999 bg-white/80 backdrop-blur-xs transition'
+        className={`header top-0 left-0 z-40 flex w-full items-center ${sticky
+            ? 'fixed bg-background/80 backdrop-blur-sm shadow-md'
             : 'absolute bg-transparent'
-        }`}
+          }`}
       >
         <div className='container'>
           <div className='relative -mx-4 flex items-center justify-between'>
@@ -98,7 +97,7 @@ const Header = () => {
                 </button>
                 <nav
                   id='navbarCollapse'
-                  className={`navbar border-body-color/50 dark:border-body-color/20 dark:bg-dark absolute right-0 z-30 w-[250px] rounded border-[.5px] bg-white px-6 py-4 duration-300 lg:visible lg:static lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 ${
+                  className={`navbar bg-background text-foreground border-border dark:border-border navbar border-body-color/50 dark:border-body-color/20 dark:bg-dark absolute right-0 z-30 w-[250px] rounded border-[.5px] bg-white px-6 py-4 duration-300 lg:visible lg:static lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 ${
                     navbarOpen
                       ? 'visibility top-full opacity-100'
                       : 'invisible top-[120%] opacity-0'
@@ -163,13 +162,13 @@ const Header = () => {
               <div className='flex items-center justify-end pr-16 lg:pr-0'>
                 <Link
                   href='/sign-in'
-                  className='text-dark hidden px-7 py-3 text-base font-medium hover:opacity-70 md:block dark:text-white'
+                  className='text-foreground hidden px-7 py-3 text-base font-medium hover:opacity-70 md:block'
                 >
                   Sign In
                 </Link>
                 <Link
                   href='/sign-up'
-                  className='ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary/90 hidden rounded-xs px-8 py-3 text-base font-medium text-white transition duration-300 md:block md:px-9 lg:px-6 xl:px-9'
+                  className='bg-primary text-primary-foreground hover:bg-primary/90 hidden rounded-xs px-8 py-3 text-base font-medium transition duration-300 md:block'
                 >
                   Sign Up
                 </Link>

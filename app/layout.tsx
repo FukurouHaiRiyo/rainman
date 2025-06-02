@@ -26,8 +26,8 @@ export default async function RootLayout({
 
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`bg-white dark:bg-black ${inter.className}`}>
           {userId ? (
             <Providers>
               {children}
