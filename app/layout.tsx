@@ -2,7 +2,6 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
-import "./globals.css"
 import { auth } from "@clerk/nextjs/server"
 import { Toaster } from "@/components/ui/toaster"
 
