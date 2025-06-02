@@ -1,19 +1,17 @@
 'use client';
-
-import React, { useState, useEffect } from 'react';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import menuData from './menuData';
+import { useEffect, useState } from 'react';
 import ThemeToggler from './ThemeToggler';
+import menuData from './menuData';
 
 const Header = () => {
   // Navbar toggle
   const [navbarOpen, setNavbarOpen] = useState(false);
   const navbarToggleHandler = () => {
     setNavbarOpen(!navbarOpen);
-  }
+  };
 
   // Sticky Navbar
   const [sticky, setSticky] = useState(false);
@@ -24,21 +22,19 @@ const Header = () => {
       setSticky(false);
     }
   };
-
   useEffect(() => {
     window.addEventListener('scroll', handleStickyNavbar);
   });
 
-  // Submenu handler
+  // submenu handler
   const [openIndex, setOpenIndex] = useState(-1);
-  // @typescript-eslint/no-explicit-any
   const handleSubmenu = (index: any) => {
-    if(openIndex === index) {
+    if (openIndex === index) {
       setOpenIndex(-1);
     } else {
       setOpenIndex(index);
     }
-  }
+  };
 
   const usePathName = usePathname();
 
@@ -145,15 +141,17 @@ const Header = () => {
                                 openIndex === index ? 'block' : 'hidden'
                               }`}
                             >
-                              {menuItem.submenu?.map((submenuItem, index) => (
-                                <Link
-                                  href={submenuItem.path || ''}
-                                  key={index}
-                                  className='text-dark hover:text-primary block rounded-sm py-2.5 text-sm lg:px-3 dark:text-white/70 dark:hover:text-white'
-                                >
-                                  {submenuItem.title}
-                                </Link>
-                              ))}
+                              {menuItem.submenu
+                                ?.filter((submenuItem) => typeof submenuItem?.path === 'string')
+                                .map((submenuItem, index) => (
+                                  <Link
+                                    href={submenuItem.path as string}
+                                    key={index}
+                                    className='text-dark hover:text-primary block rounded-sm py-2.5 text-sm lg:px-3 dark:text-white/70 dark:hover:text-white'
+                                  >
+                                    {submenuItem.title}
+                                  </Link>
+                                ))}
                             </div>
                           </>
                         )}
@@ -184,7 +182,7 @@ const Header = () => {
         </div>
       </header>
     </>
-  )
-}
+  );
+};
 
 export default Header;
