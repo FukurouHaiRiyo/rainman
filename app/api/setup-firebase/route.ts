@@ -1,35 +1,48 @@
-import { NextResponse } from 'next/server';
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { getDatabase } from 'firebase-admin/database';
+import { NextResponse } from "next/server"
+import { getFirebaseAdminDatabase, checkFirebaseAdminConfig } from "@/app/lib/firebase-admin"
 
-if (!getApps().length) {
-    initializeApp({
-      credential: cert({
-        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-      }),
-      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-    })
-  }
-
-// This route will initialize the Firebase database with sample data
 export async function POST(request: Request) {
-    try {
-      const db = getDatabase()
-      const { data } = await request.json()
-  
-      // Check if data is provided
-      if (!data) {
-        return NextResponse.json({ error: "No data provided" }, { status: 400 })
-      }
-  
-      // Write data to Firebase
-      await db.ref("/").set(data) 
-  
-      return NextResponse.json({ success: true, message: "Firebase database initialized with sample data" })
-    } catch (error) {
-      console.error("Error initializing Firebase database:", error)
-      return NextResponse.json({ error: "Failed to initialize Firebase database" }, { status: 500 })
+  try {
+    // Check Firebase Admin configuration first
+    const configCheck = await checkFirebaseAdminConfig()
+
+    if (!configCheck.success) {
+      console.error("Firebase Admin configuration error:", configCheck.message)
+      return NextResponse.json(
+        {
+          error: "Firebase Admin configuration failed",
+          details: configCheck.message,
+          config: configCheck.config,
+        },
+        { status: 500 },
+      )
     }
+
+    // Get the database instance
+    const database = getFirebaseAdminDatabase()
+
+    const { data } = await request.json()
+
+    // Check if data is provided
+    if (!data) {
+      return NextResponse.json({ error: "No data provided" }, { status: 400 })
+    }
+
+    // Write data to Firebase
+    await database.ref("/").set(data)
+
+    return NextResponse.json({
+      success: true,
+      message: "Firebase database initialized with sample data",
+    })
+  } catch (error) {
+    console.error("Error initializing Firebase database:", error)
+    return NextResponse.json(
+      {
+        error: "Failed to initialize Firebase database",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    )
+  }
 }
