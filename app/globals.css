@@ -134,3 +134,20 @@
     @apply inline-flex;
   }
 }
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: 226 76% 55%;
+  --primary-foreground: #ffffff;
+  --card: #f9fafb;
+  --card-foreground: #1f2937;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #ffffff;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+}
+
