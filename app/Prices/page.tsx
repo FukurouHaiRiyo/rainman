@@ -11,8 +11,8 @@ const Pricing = () => {
     <section id='pricing' className='relative z-10 py-16 md:py-20 lg:py-28 bg-background text-foreground'>
       <div className='container'>
         <SectionTitle
-          title='Simple and Affordable Pricing'
-          paragraph='There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form.'
+          title='Pachete de Consultanță IT și Logistica Depozitelor'
+          paragraph='Alege un pachet adaptat afacerii tale – de la suport IT esențial, până la automatizarea completă a depozitului.'
           center
           width='665px'
         />
@@ -21,11 +21,10 @@ const Pricing = () => {
           <div className='mb-8 flex justify-center md:mb-12 lg:mb-16'>
             <span
               onClick={() => setIsMonthly(true)}
-              className={`${
-                isMonthly
+              className={`${isMonthly
                   ? 'pointer-events-none text-primary'
                   : 'text-dark dark:text-white'
-              } mr-4 cursor-pointer text-base font-semibold`}
+                } mr-4 cursor-pointer text-base font-semibold`}
             >
               Monthly
             </span>
@@ -36,9 +35,8 @@ const Pricing = () => {
               <div className='relative'>
                 <div className='h-5 w-14 rounded-full bg-[#1D2144] shadow-inner'></div>
                 <div
-                  className={`${
-                    isMonthly ? '' : 'translate-x-full'
-                  } shadow-switch-1 absolute left-0 top-[-4px] flex h-7 w-7 items-center justify-center rounded-full bg-primary transition`}
+                  className={`${isMonthly ? '' : 'translate-x-full'
+                    } shadow-switch-1 absolute left-0 top-[-4px] flex h-7 w-7 items-center justify-center rounded-full bg-primary transition`}
                 >
                   <span className='active h-4 w-4 rounded-full bg-white'></span>
                 </div>
@@ -46,11 +44,10 @@ const Pricing = () => {
             </div>
             <span
               onClick={() => setIsMonthly(false)}
-              className={`${
-                isMonthly
+              className={`${isMonthly
                   ? 'text-dark dark:text-white'
                   : 'pointer-events-none text-primary'
-              } ml-4 cursor-pointer text-base font-semibold`}
+                } ml-4 cursor-pointer text-base font-semibold`}
             >
               Yearly
             </span>
@@ -59,44 +56,47 @@ const Pricing = () => {
 
         <div className='grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3'>
           <PricingBox
-            packageName='Lite'
-            price={isMonthly ? '40' : '120'}
+            packageName='Starter IT'
+            price={isMonthly ? '149' : '1200'}
             duration={isMonthly ? 'mo' : 'yr'}
-            subtitle='Lorem ipsum dolor sit amet adiscing elit Mauris egestas enim.'
+            subtitle='Pachet pentru companii mici care au nevoie de suport IT esențial.'
           >
-            <OfferList text='All UI Components' status='active' />
-            <OfferList text='Use with Unlimited Projects' status='active' />
-            <OfferList text='Commercial Use' status='active' />
-            <OfferList text='Email Support' status='active' />
-            <OfferList text='Lifetime Access' status='inactive' />
-            <OfferList text='Free Lifetime Updates' status='inactive' />
+            <OfferList text='Suport tehnic 8/5' status='active' />
+            <OfferList text='Monitorizare servere & backup' status='active' />
+            <OfferList text='Gestionare conturi și e-mail' status='active' />
+            <OfferList text='Securitate de bază' status='active' />
+            <OfferList text='Acces la consultanță dedicată' status='inactive' />
+            <OfferList text='Automatizare procese' status='inactive' />
           </PricingBox>
+
           <PricingBox
-            packageName='Basic'
-            price={isMonthly ? '399' : '789'}
+            packageName='Warehouse Pro'
+            price={isMonthly ? '399' : '3490'}
             duration={isMonthly ? 'mo' : 'yr'}
-            subtitle='Lorem ipsum dolor sit amet adiscing elit Mauris egestas enim.'
+            subtitle='Ideal pentru firme cu depozite care doresc eficiență operațională.'
           >
-            <OfferList text='All UI Components' status='active' />
-            <OfferList text='Use with Unlimited Projects' status='active' />
-            <OfferList text='Commercial Use' status='active' />
-            <OfferList text='Email Support' status='active' />
-            <OfferList text='Lifetime Access' status='active' />
-            <OfferList text='Free Lifetime Updates' status='inactive' />
+            <OfferList text='Audit complet fluxuri depozit' status='active' />
+            <OfferList text='Implementare WMS' status='active' />
+            <OfferList text='Integrare coduri de bare & RFID' status='active' />
+            <OfferList text='Training angajați depozit' status='active' />
+            <OfferList text='Dashboard KPI' status='active' />
+            <OfferList text='Suport on-site (opțional)' status='inactive' />
           </PricingBox>
+
           <PricingBox
-            packageName='Plus'
-            price={isMonthly ? '589' : '999'}
+            packageName='Digital Enterprise'
+            price={isMonthly ? '799' : '6999'}
             duration={isMonthly ? 'mo' : 'yr'}
-            subtitle='Lorem ipsum dolor sit amet adiscing elit Mauris egestas enim.'
+            subtitle='Pachet complet IT & logistic pentru digitalizarea întregii companii.'
           >
-            <OfferList text='All UI Components' status='active' />
-            <OfferList text='Use with Unlimited Projects' status='active' />
-            <OfferList text='Commercial Use' status='active' />
-            <OfferList text='Email Support' status='active' />
-            <OfferList text='Lifetime Access' status='active' />
-            <OfferList text='Free Lifetime Updates' status='active' />
+            <OfferList text='Consultanță IT + logistică dedicată' status='active' />
+            <OfferList text='Implementare ERP + WMS + BI' status='active' />
+            <OfferList text='Automatizare procese interne' status='active' />
+            <OfferList text='Migrare în cloud & securitate' status='active' />
+            <OfferList text='Training personal & suport extins' status='active' />
+            <OfferList text='Mentorat IT strategic (CIO-as-a-service)' status='active' />
           </PricingBox>
+
         </div>
       </div>
 
