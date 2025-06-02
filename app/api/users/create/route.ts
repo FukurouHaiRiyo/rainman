@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { clerkClient } from "@clerk/clerk-sdk-node"
-import { getFirebaseAdminDatabase } from "@/app/lib/firebase-admin"
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,6 +25,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields: email, firstName, lastName, role" }, { status: 400 })
     }
 
+    // Validate role
+    const validRoles = ["admin", "manager", "inventory", "driver", "employee", "guest"]
+    if (!validRoles.includes(role)) {
+      return NextResponse.json({ error: "Invalid role" }, { status: 400 })
+    }
+
     // Check if user with email already exists
     try {
       const existingUsers = await clerkClient.users.getUserList({
@@ -40,70 +45,118 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to check existing users" }, { status: 500 })
     }
 
-    // Create user in Clerk
-    const newUser = await clerkClient.users.createUser({
-      emailAddress: [email],
-      firstName,
-      lastName,
-      publicMetadata: {
-        role,
-      },
-      skipPasswordChecks: true,
-      skipPasswordRequirement: true,
-    })
+    let newUser
+    let invitationSent = false
 
-    // Save user to Firebase
-    try {
-      const database = getFirebaseAdminDatabase()
-      const userData = {
-        id: newUser.id,
-        email,
-        firstName,
-        lastName,
-        role,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-
-      await database.ref(`users/${newUser.id}`).set(userData)
-    } catch (firebaseError) {
-      console.error("Error saving user to Firebase:", firebaseError)
-      // Continue even if Firebase save fails
-    }
-
-    // Send invitation if requested
     if (sendInvitation) {
+      // Send invitation instead of creating user directly
       try {
-        await clerkClient.invitations.createInvitation({
+        const invitation = await clerkClient.invitations.createInvitation({
           emailAddress: email,
-          redirectUrl: `${process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || "/dashboard"}`,
           publicMetadata: {
             role,
           },
+          redirectUrl:
+            process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL ||
+            `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dashboard`,
         })
-      } catch (invitationError) {
+
+        invitationSent = true
+        console.log("Invitation sent successfully:", invitation.id)
+
+        return NextResponse.json({
+          success: true,
+          message: "Invitation sent successfully",
+          invitationId: invitation.id,
+        })
+      } catch (invitationError: any) {
         console.error("Error sending invitation:", invitationError)
-        // Continue even if invitation fails
+        console.error("Invitation error details:", {
+          status: invitationError.status,
+          errors: invitationError.errors,
+          clerkTraceId: invitationError.clerkTraceId,
+        })
+
+        return NextResponse.json(
+          {
+            error: "Failed to send invitation",
+            details: invitationError.errors || invitationError.message,
+          },
+          { status: 500 },
+        )
+      }
+    } else {
+      // Create user directly
+      try {
+        newUser = await clerkClient.users.createUser({
+          emailAddress: [email],
+          firstName,
+          lastName,
+          publicMetadata: {
+            role,
+          },
+          skipPasswordChecks: true,
+          skipPasswordRequirement: true,
+        })
+
+        console.log("User created successfully:", newUser.id)
+      } catch (userCreationError: any) {
+        console.error("Error creating user:", userCreationError)
+        return NextResponse.json(
+          {
+            error: "Failed to create user",
+            details: userCreationError.errors || userCreationError.message,
+          },
+          { status: 500 },
+        )
+      }
+    }
+
+    // Save user to Firebase (only if user was created, not for invitations)
+    if (newUser) {
+      try {
+        // Import Firebase Admin dynamically to avoid initialization issues
+        const { getFirebaseAdminDatabase } = await import("@/app/lib/firebase-admin")
+        const database = getFirebaseAdminDatabase()
+
+        const userData = {
+          id: newUser.id,
+          email,
+          firstName,
+          lastName,
+          role,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+
+        await database.ref(`users/${newUser.id}`).set(userData)
+        console.log("User saved to Firebase successfully")
+      } catch (firebaseError) {
+        console.error("Error saving user to Firebase:", firebaseError)
+        // Continue even if Firebase save fails - user is still created in Clerk
       }
     }
 
     return NextResponse.json({
       success: true,
-      message: `User created successfully${sendInvitation ? " and invitation sent" : ""}`,
-      user: {
-        id: newUser.id,
-        email,
-        firstName,
-        lastName,
-        role,
-      },
+      message: `User ${sendInvitation ? "invitation sent" : "created"} successfully`,
+      user: newUser
+        ? {
+            id: newUser.id,
+            email,
+            firstName,
+            lastName,
+            role,
+          }
+        : undefined,
+      invitationSent,
     })
-  } catch (error) {
-    console.error("Error creating user:", error)
+  } catch (error: any) {
+    console.error("Error in user creation:", error)
     return NextResponse.json(
       {
         error: "Failed to create user",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error.message || "Unknown error",
       },
       { status: 500 },
     )

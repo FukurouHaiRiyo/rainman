@@ -1,4 +1,5 @@
-import * as admin from "firebase-admin"
+// Import firebase-admin differently to avoid import issues
+import admin from "firebase-admin"
 
 interface FirebaseAdminConfig {
   projectId: string
@@ -9,29 +10,52 @@ interface FirebaseAdminConfig {
 /**
  * Processes the private key to handle different formats and ensure proper PEM formatting
  */
-function processPrivateKey(privateKey: string): string {
+function processPrivateKey(): string {
   // Check if we have a base64 encoded key first
   const base64Key = process.env.FIREBASE_ADMIN_PRIVATE_KEY_BASE64
+  const directKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY
+
+  let privateKey = ""
+
   if (base64Key) {
     try {
-      // Try to decode the base64 key
-      const decodedKey = Buffer.from(base64Key, "base64").toString("utf8")
-      console.log("Using base64 decoded private key")
-      return decodedKey
+      console.log("Attempting to decode base64 private key...")
+      // Decode the base64 key
+      privateKey = Buffer.from(base64Key, "base64").toString("utf8")
+      console.log("Base64 decoding successful")
+      console.log("Decoded key preview:", privateKey.substring(0, 50) + "...")
     } catch (error) {
       console.error("Failed to decode base64 private key:", error)
-      // Fall back to regular key
+      throw new Error("Failed to decode base64 private key")
     }
+  } else if (directKey) {
+    console.log("Using direct private key...")
+    privateKey = directKey
+  } else {
+    throw new Error("No private key found. Set either FIREBASE_ADMIN_PRIVATE_KEY or FIREBASE_ADMIN_PRIVATE_KEY_BASE64")
   }
+
+  // Clean up the private key
+  let processedKey = privateKey.trim()
 
   // Handle escaped newlines (\\n) by replacing them with actual newlines (\n)
-  let processedKey = privateKey.replace(/\\n/g, "\n")
+  processedKey = processedKey.replace(/\\n/g, "\n")
 
-  // If the key doesn't start with the PEM header, add it
+  // Remove any extra quotes that might have been added
+  processedKey = processedKey.replace(/^["']|["']$/g, "")
+
+  // Ensure the key has proper PEM format
   if (!processedKey.includes("-----BEGIN PRIVATE KEY-----")) {
-    processedKey = `-----BEGIN PRIVATE KEY-----\n${processedKey}\n-----END PRIVATE KEY-----\n`
+    console.error("Private key does not contain PEM header")
+    throw new Error("Private key must contain '-----BEGIN PRIVATE KEY-----' header")
   }
 
+  if (!processedKey.includes("-----END PRIVATE KEY-----")) {
+    console.error("Private key does not contain PEM footer")
+    throw new Error("Private key must contain '-----END PRIVATE KEY-----' footer")
+  }
+
+  console.log("Private key validation successful")
   return processedKey
 }
 
@@ -40,43 +64,40 @@ function processPrivateKey(privateKey: string): string {
  */
 function validateConfig(config: FirebaseAdminConfig): void {
   if (!config.projectId) {
-    throw new Error("Firebase Admin project ID is required")
+    throw new Error("Firebase Admin project ID is required (FIREBASE_ADMIN_PROJECT_ID)")
   }
 
   if (!config.clientEmail) {
-    throw new Error("Firebase Admin client email is required")
+    throw new Error("Firebase Admin client email is required (FIREBASE_ADMIN_CLIENT_EMAIL)")
   }
 
   if (!config.privateKey) {
     throw new Error("Firebase Admin private key is required")
   }
 
-  // Basic validation for private key format
-  const key = config.privateKey
-  if (!key.includes("PRIVATE KEY")) {
-    console.warn('Warning: Private key may not be properly formatted. It should include "PRIVATE KEY" text.')
-  }
+  console.log("Configuration validation successful:")
+  console.log("- Project ID:", config.projectId)
+  console.log("- Client Email:", config.clientEmail)
+  console.log("- Private Key Length:", config.privateKey.length)
 }
 
 /**
  * Gets the Firebase Admin configuration from environment variables
  */
-export default function getFirebaseAdminConfig(): FirebaseAdminConfig {
+function getFirebaseAdminConfig(): FirebaseAdminConfig {
   const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID
   const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL
-  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY || ""
 
-  if (!projectId) {
-    throw new Error("Firebase Admin project ID is required")
-  }
-  if (!clientEmail) {
-    throw new Error("Firebase Admin client email is required")
+  if (!projectId || !clientEmail) {
+    throw new Error("Missing required Firebase Admin environment variables")
   }
 
-  const config: FirebaseAdminConfig = {
+  const privateKey = processPrivateKey()
+
+  const config = {
     projectId,
     clientEmail,
-    privateKey: processPrivateKey(privateKey),
+    privateKey,
   }
 
   validateConfig(config)
@@ -93,9 +114,16 @@ export function initializeFirebaseAdmin(): admin.app.App {
   } catch (error) {
     // Firebase Admin is not initialized, so initialize it
     try {
+      console.log("Initializing Firebase Admin...")
+
+      // Check if admin is properly imported
+      if (!admin || typeof admin.initializeApp !== "function") {
+        throw new Error("Firebase Admin SDK not properly imported")
+      }
+
       const config = getFirebaseAdminConfig()
 
-      return admin.initializeApp({
+      const app = admin.initializeApp({
         credential: admin.credential.cert({
           projectId: config.projectId,
           clientEmail: config.clientEmail,
@@ -103,10 +131,16 @@ export function initializeFirebaseAdmin(): admin.app.App {
         }),
         databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
       })
-    } catch (initError) {
+
+      console.log("Firebase Admin initialized successfully")
+      return app
+    } catch (initError: any) {
       console.error("Failed to initialize Firebase Admin:", initError)
-      const errorMessage = (initError instanceof Error) ? initError.message : String(initError)
-      throw new Error(`Firebase Admin initialization failed: ${errorMessage}`)
+      console.error("Error details:", {
+        message: initError.message,
+        stack: initError.stack,
+      })
+      throw new Error(`Firebase Admin initialization failed: ${initError.message}`)
     }
   }
 }
@@ -151,21 +185,25 @@ export async function checkFirebaseAdminConfig(): Promise<{
   try {
     const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID
     const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL
-    const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY || ""
     const databaseURL = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
+    const hasBase64Key = !!process.env.FIREBASE_ADMIN_PRIVATE_KEY_BASE64
+    const hasDirectKey = !!process.env.FIREBASE_ADMIN_PRIVATE_KEY
 
-    if (!projectId || !clientEmail || !privateKey) {
+    if (!projectId || !clientEmail || (!hasBase64Key && !hasDirectKey)) {
       return {
         success: false,
         message: "Missing required Firebase Admin configuration",
         config: {
           projectId: projectId || "MISSING",
           clientEmail: clientEmail || "MISSING",
-          privateKeyPreview: privateKey ? `${privateKey.substring(0, 15)}...` : "MISSING",
+          privateKeyPreview: hasBase64Key ? "BASE64_KEY_SET" : hasDirectKey ? "DIRECT_KEY_SET" : "MISSING",
           databaseURL: databaseURL || "MISSING",
         },
       }
     }
+
+    // Try to process the private key
+    const privateKey = processPrivateKey()
 
     // Try to initialize Firebase Admin
     const app = initializeFirebaseAdmin()
@@ -184,19 +222,17 @@ export async function checkFirebaseAdminConfig(): Promise<{
       config: {
         projectId,
         clientEmail,
-        privateKeyPreview: `${privateKey.substring(0, 15)}...`,
-        databaseURL: databaseURL || "",
+        privateKeyPreview: `${privateKey.substring(0, 30)}...`,
+        databaseURL: databaseURL || "MISSING",
       },
     }
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
-      message: `Firebase Admin configuration check failed: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
+      message: `Firebase Admin configuration check failed: ${error.message}`,
       error: {
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
+        message: error.message,
+        stack: error.stack,
       },
     }
   }
