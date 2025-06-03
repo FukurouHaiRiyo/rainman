@@ -25,14 +25,14 @@ const BlogDetailsPage = () => {
                       <div className='relative h-10 w-10 overflow-hidden rounded-full'>
                         <Image
                           src='/images/blog/author-01.png'
-                          alt='Alex Popescu'
+                          alt='Andrei-Stefan Panait'
                           fill
                         />
                       </div>
                     </div>
                     <div className='w-full'>
                       <span className='text-body-color mb-1 text-base font-medium'>
-                        De <span>Alex Popescu</span>
+                        De <span>Andrei-Stefan Panait</span>
                       </span>
                     </div>
                   </div>
@@ -108,7 +108,7 @@ const BlogDetailsPage = () => {
                 </ul>
                 <div className='bg-primary/10 relative z-10 mb-10 overflow-hidden rounded-md p-8 md:p-9 lg:p-8 xl:p-9'>
                   <p className='text-body-color text-center text-base font-medium italic'>
-                    'Certificarea ISO 27001 nu este doar o formalitate, ci o investiție strategică în securitatea și reputația companiei tale.'
+                    Certificarea ISO 27001 nu este doar o formalitate, ci o investiție strategică în securitatea și reputația companiei tale.
                   </p>
                 </div>
                 <p className='text-body-color mb-10 text-base leading-relaxed font-medium sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed'>
