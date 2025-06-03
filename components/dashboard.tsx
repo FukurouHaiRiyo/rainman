@@ -19,7 +19,6 @@ import {
   SidebarProvider,
 } from "@/components/sidebar"
 import { Sidebar1 } from "@/components/dashboard/sidebar"
-import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import InventoryOverview from "@/components/inventory/overview"
 import OrdersOverview from "@/components/orders/overview"
@@ -35,7 +34,6 @@ import Navbar from '@/components/Navbar'
 import { canViewSidebarItem } from "@/app/lib/roles"
 import { useUserRole } from "@/context/user-context"
 import { useClerk } from "@clerk/nextjs"
-import Link from "next/link"
 // import RoleDashboard from "@/components/dashboards/role-dashboard"
 
 export default function Dashboard() {
