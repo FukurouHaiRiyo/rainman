@@ -1,7 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
-import Blog from '@/components/Blog/page';
 // import Brands from '@/components/Brands';
 import ScrollUp from '@/components/Common/ScrollUp';
 // import Features from '@/components/Features';
@@ -40,7 +39,6 @@ export default async function Home() {
       {/* <AboutSectionOne />
       <AboutSectionTwo /> */}
       <Pricing />
-      <Blog />
     </>
   );
 }
