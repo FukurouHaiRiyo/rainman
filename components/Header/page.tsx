@@ -164,13 +164,13 @@ const Header = () => {
                   href='/sign-in'
                   className='text-foreground hidden px-7 py-3 text-base font-medium hover:opacity-70 md:block'
                 >
-                  Sign In
+                  Logare
                 </Link>
                 <Link
                   href='/sign-up'
                   className='bg-primary text-primary-foreground hover:bg-primary/90 hidden rounded-xs px-8 py-3 text-base font-medium transition duration-300 md:block'
                 >
-                  Sign Up
+                  Înregistrare
                 </Link>
                 <div>
                   <ThemeToggler />
