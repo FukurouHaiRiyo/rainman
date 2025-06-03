@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
           },
           redirectUrl:
             process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL ||
-            `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dashboard`,
+            `${process.env.NEXT_PUBLIC_APP_URL || "https://rainman-beta.vercel.app"}/dashboard`,
         })
 
         invitationSent = true
@@ -71,11 +71,12 @@ export async function POST(request: NextRequest) {
         })
       } catch (invitationError: any) {
         console.error("Error sending invitation:", invitationError)
-        console.error("Invitation error details:", {
-          status: invitationError.status,
-          errors: invitationError.errors,
-          clerkTraceId: invitationError.clerkTraceId,
-        })
+        console.error("Invitation error details:", JSON.stringify(invitationError, null, 2));
+        // console.error("Invitation error details:", {
+        //   status: invitationError.status,
+        //   errors: invitationError.errors,
+        //   clerkTraceId: invitationError.clerkTraceId,
+        // })
 
         return NextResponse.json(
           {
