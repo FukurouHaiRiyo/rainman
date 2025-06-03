@@ -3,45 +3,60 @@ import { Blog } from '@/types/blog';
 const blogData: Blog[] = [
   {
     id: 1,
-    title: 'Best UI components for modern websites',
+    title: 'Cum te ajută ISO 27001 să-ți securizezi compania',
     paragraph:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sit amet dictum neque, laoreet dolor.',
+      'Află cum implementarea unui sistem de management al securității informației (ISMS) conform ISO 27001 îți protejează afacerea de riscurile cibernetice.',
     image: '/images/blog/blog-01.jpg',
     author: {
-      name: 'Samuyl Joshi',
+      name: 'Andrei-Stefan Panait',
       image: '/images/blog/author-01.png',
-      designation: 'Graphic Designer',
+      designation: 'Auditor Intern ISO 27001',
     },
-    tags: ['creative'],
+    tags: ['audit', 'securitate'],
     publishDate: '2025',
   },
   {
     id: 2,
-    title: '9 simple ways to improve your design skills',
+    title: 'Top 5 greșeli în gestiunea stocurilor și cum le eviți',
     paragraph:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sit amet dictum neque, laoreet dolor.',
+      'O bună organizare a depozitului reduce pierderile și crește eficiența. Vezi cele mai frecvente greșeli și soluții practice.',
     image: '/images/blog/blog-02.jpg',
     author: {
-      name: 'Musharof Chy',
+      name: 'Andrei-Stefan Panait',
       image: '/images/blog/author-02.png',
-      designation: 'Content Writer',
+      designation: 'Consultant logistică',
     },
-    tags: ['computer'],
+    tags: ['logistică', 'depozit'],
     publishDate: '2025',
   },
   {
     id: 3,
-    title: 'Tips to quickly improve your coding speed.',
+    title: 'Cele mai bune practici pentru dezvoltarea aplicațiilor web',
     paragraph:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sit amet dictum neque, laoreet dolor.',
+      'Din experiență: cum organizezi un proiect modern de programare pentru scalabilitate, performanță și securitate.',
     image: '/images/blog/blog-03.jpg',
     author: {
-      name: 'Lethium Deo',
+      name: 'Andrei-Stefan Panait',
       image: '/images/blog/author-03.png',
-      designation: 'Graphic Designer',
+      designation: 'Software Engineer',
     },
-    tags: ['design'],
+    tags: ['programare', 'software'],
+    publishDate: '2025',
+  },
+  {
+    id: 4,
+    title: 'Ghid complet pentru asamblarea unui PC performant',
+    paragraph:
+      'Învață cum să alegi și să montezi componentele potrivite pentru un sistem echilibrat, fie pentru birou, fie pentru gaming.',
+    image: '/images/blog/blog-04.jpg',
+    author: {
+      name: 'Andrei-Stefan Panait',
+      image: '/images/blog/author-04.png',
+      designation: 'Tehnician hardware',
+    },
+    tags: ['hardware', 'pc'],
     publishDate: '2025',
   },
 ];
+
 export default blogData;
