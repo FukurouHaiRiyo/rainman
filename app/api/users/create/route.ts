@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     let newUser
-    let invitationSent = false
+    const invitationSent = false
 
     if (sendInvitation) {
       try {
