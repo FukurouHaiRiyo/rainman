@@ -49,7 +49,6 @@ export async function POST(request: NextRequest) {
     let invitationSent = false
 
     if (sendInvitation) {
-      // Send invitation instead of creating user directly
       try {
         const invitation = await clerkClient.invitations.createInvitation({
           emailAddress: email,
@@ -59,32 +58,29 @@ export async function POST(request: NextRequest) {
           redirectUrl:
             process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL ||
             `${process.env.NEXT_PUBLIC_APP_URL || "https://rainman-beta.vercel.app"}/dashboard`,
-        })
+        });
 
-        invitationSent = true
-        console.log("Invitation sent successfully:", invitation.id)
+        if (!invitation || !invitation.id) {
+          throw new Error("Clerk did not return a valid invitation ID.");
+        }
+
+        console.log("Invitation sent successfully:", invitation.id);
 
         return NextResponse.json({
           success: true,
           message: "Invitation sent successfully",
           invitationId: invitation.id,
-        })
-      } catch (invitationError: any) {
-        console.error("Error sending invitation:", invitationError)
-        console.error("Invitation error details:", JSON.stringify(invitationError, null, 2));
-        // console.error("Invitation error details:", {
-        //   status: invitationError.status,
-        //   errors: invitationError.errors,
-        //   clerkTraceId: invitationError.clerkTraceId,
-        // })
+        });
 
+      } catch (invitationError: any) {
+        console.error("Error sending invitation:", invitationError);
         return NextResponse.json(
           {
             error: "Failed to send invitation",
             details: invitationError.errors || invitationError.message,
           },
-          { status: 500 },
-        )
+          { status: 500 }
+        );
       }
     } else {
       // Create user directly
@@ -143,12 +139,12 @@ export async function POST(request: NextRequest) {
       message: `User ${sendInvitation ? "invitation sent" : "created"} successfully`,
       user: newUser
         ? {
-            id: newUser.id,
-            email,
-            firstName,
-            lastName,
-            role,
-          }
+          id: newUser.id,
+          email,
+          firstName,
+          lastName,
+          role,
+        }
         : undefined,
       invitationSent,
     })
