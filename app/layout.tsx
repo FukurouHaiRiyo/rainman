@@ -29,18 +29,17 @@ export default async function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={`bg-white dark:bg-black ${inter.className}`}>
           {userId ? (
-            <Providers>
+            <>
               {children}
               <Toaster />
-
-            </Providers>
+            </>
           ): (
-            <Providers>
+            <>
               <Header />
               {children}
               <Toaster />
               <Footer />
-            </Providers>
+            </>
           )}
         </body>
       </html>
