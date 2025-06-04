@@ -81,7 +81,7 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
       if (data.invitationSent) {
         toast({
           title: 'Invitation Sent',
-          description: `Invitation email sent to ${formData.email}. ${data.note || ''}`,
+          description: `Invitation email sent to ${formData.email}. They will receive an email to complete their registration.`,
         })
       } else if (data.user?.tempPassword) {
         toast({
@@ -156,70 +156,6 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
     onUserAdded()
   }
 
-  const runDebugCheck = async () => {
-    try {
-      const response = await fetch('/api/debug-clerk-full')
-      const data = await response.json()
-      console.log('Full Clerk debug info:', data)
-
-      toast({
-        title: 'Debug Complete',
-        description: 'Check browser console for detailed Clerk configuration info',
-      })
-    } catch (error) {
-      console.error('Debug check failed:', error)
-      toast({
-        title: 'Debug Failed',
-        description: 'Could not run debug check',
-        variant: 'destructive',
-      })
-    }
-  }
-
-  const testMinimalInvitation = async () => {
-    if (!formData.email) {
-      toast({
-        title: 'Error',
-        description: 'Please enter an email address first',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    try {
-      const response = await fetch('/api/test-invitation-minimal', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: formData.email }),
-      })
-
-      const data = await response.json()
-      console.log('Minimal invitation test result:', data)
-
-      if (data.success) {
-        toast({
-          title: 'Test Successful',
-          description: 'Minimal invitation test passed. Invitations should work.',
-        })
-      } else {
-        toast({
-          title: 'Test Failed',
-          description: data.error || 'Minimal invitation test failed',
-          variant: 'destructive',
-        })
-      }
-    } catch (error) {
-      console.error('Minimal invitation test failed:', error)
-      toast({
-        title: 'Test Failed',
-        description: 'Network error during test',
-        variant: 'destructive',
-      })
-    }
-  }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -254,14 +190,6 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
                     </pre>
                   </div>
                 )}
-                <div className='flex gap-2 mt-2'>
-                  <Button size='sm' variant='outline' onClick={runDebugCheck}>
-                    Full Debug
-                  </Button>
-                  <Button size='sm' variant='outline' onClick={testMinimalInvitation}>
-                    Test Invitation
-                  </Button>
-                </div>
               </div>
             </AlertDescription>
           </Alert>
@@ -364,7 +292,7 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
                   onCheckedChange={(checked) => handleInputChange('sendInvitation', checked as boolean)}
                 />
                 <Label htmlFor='sendInvitation' className='text-sm font-normal'>
-                  Send invitation email (with fallback to direct creation)
+                  Send invitation email (recommended)
                 </Label>
               </div>
             </div>

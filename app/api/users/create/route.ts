@@ -55,22 +55,24 @@ export async function POST(request: NextRequest) {
     }
 
     if (sendInvitation) {
-      // Try to send invitation with multiple fallback approaches
-      console.log('Attempting to send invitation...')
-
-      // Approach 1: Try with minimal data
+      // Send Clerk invitation
       try {
-        console.log('Trying minimal invitation...')
+        console.log('Attempting to send Clerk invitation...')
+
         const invitation = await clerkClient.invitations.createInvitation({
           emailAddress: email,
+          publicMetadata: {
+            role,
+            firstName,
+            lastName,
+          },
+          redirectUrl: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || '/dashboard',
         })
 
-        console.log('Minimal invitation sent successfully:', invitation.id)
+        console.log('Clerk invitation sent successfully:', invitation.id)
 
-        // Update the invitation with metadata using a separate call
+        // Store invitation metadata in Firebase
         try {
-          // Note: Clerk doesn't allow updating invitation metadata after creation
-          // So we'll store this in Firebase instead
           const { getFirebaseAdminDatabase } = await import('@/app/lib/firebase-admin')
           const database = getFirebaseAdminDatabase()
 
@@ -89,6 +91,7 @@ export async function POST(request: NextRequest) {
           console.log('Invitation metadata saved to Firebase')
         } catch (firebaseError) {
           console.error('Error saving invitation metadata:', firebaseError)
+          // Continue even if Firebase save fails
         }
 
         return NextResponse.json({
@@ -98,16 +101,14 @@ export async function POST(request: NextRequest) {
           email,
           role,
           invitationSent: true,
-          note: 'User will need to set their role after registration',
         })
-      } catch (minimalError: any) {
-        console.error('Minimal invitation failed:', minimalError)
+      } catch (invitationError: any) {
+        console.error('Clerk invitation failed:', invitationError)
 
-        // Approach 2: Create user directly and send custom email
-        console.log('Invitation failed, creating user directly and sending custom notification...')
+        // Fallback: Create user directly with temporary password
+        console.log('Invitation failed, creating user directly...')
 
         try {
-          // Create user in Clerk with a temporary password
           const tempPassword = Math.random().toString(36).slice(-12) + 'A1!'
           const newUser = await clerkClient.users.createUser({
             emailAddress: [email],
@@ -135,7 +136,7 @@ export async function POST(request: NextRequest) {
               role,
               status: 'active',
               needsPasswordReset: true,
-              tempPassword: tempPassword, // Store temporarily for admin to share
+              tempPassword: tempPassword,
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
             }
@@ -148,7 +149,7 @@ export async function POST(request: NextRequest) {
 
           return NextResponse.json({
             success: true,
-            message: 'User created successfully (invitation system unavailable)',
+            message: 'Invitation failed - User created with temporary password',
             user: {
               id: newUser.id,
               email,
@@ -158,7 +159,7 @@ export async function POST(request: NextRequest) {
               tempPassword: tempPassword,
             },
             invitationSent: false,
-            note: 'Invitation system failed. User created with temporary password. Please share login credentials manually.',
+            note: 'Clerk invitation failed. User created with temporary password. Please share login credentials manually.',
           })
         } catch (directCreationError: any) {
           console.error('Direct user creation also failed:', directCreationError)
@@ -167,17 +168,17 @@ export async function POST(request: NextRequest) {
             {
               error: 'Failed to send invitation and create user',
               details: {
-                invitationError: minimalError.message,
+                invitationError: invitationError.message,
                 creationError: directCreationError.message,
               },
-              suggestion: 'Check Clerk configuration and try creating user without invitation',
+              suggestion: 'Check Clerk configuration and try again',
             },
             { status: 500 },
           )
         }
       }
     } else {
-      // Create user directly (existing logic)
+      // Create user directly
       try {
         console.log('Creating user directly...')
 
