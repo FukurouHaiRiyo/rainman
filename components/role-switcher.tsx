@@ -2,7 +2,9 @@ import React from 'react';
 
 const RoleSwitcher = () => {
   return (
-    <div>RoleSwitcher</div>
+    <div>
+      div
+    </div>
   )
 }
 
