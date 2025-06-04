@@ -1,10 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { auth, clerkClient } from "@clerk/nextjs/server"
+import { auth } from "@clerk/nextjs/server"
+import { clerkClient } from "@clerk/clerk-sdk-node"
 
 export async function POST(request: NextRequest) {
   try {
     // Check if user is authenticated and is admin
-    const { userId } = auth()
+    const { userId } = await auth()
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -62,7 +63,15 @@ export async function POST(request: NextRequest) {
         console.log("Attempting to send invitation...")
 
         // Prepare invitation data
-        const invitationData = {
+        const invitationData: {
+          emailAddress: string
+          publicMetadata: {
+            role: string
+            firstName: string
+            lastName: string
+          }
+          redirectUrl?: string
+        } = {
           emailAddress: email,
           publicMetadata: {
             role,
@@ -160,7 +169,7 @@ export async function POST(request: NextRequest) {
       try {
         console.log("Saving user to Firebase...")
         // Import Firebase Admin dynamically to avoid initialization issues
-        const { getFirebaseAdminDatabase } = await import("@/lib/firebase-admin")
+        const { getFirebaseAdminDatabase } = await import("@/app/lib/firebase-admin")
         const database = getFirebaseAdminDatabase()
 
         const userData = {
