@@ -3,7 +3,7 @@ export function DriverDashboard() {
     <div className='grid gap-6'>
       <div className='grid gap-6 md:grid-cols-2'>
         <div className='rounded-lg border p-6'>
-          <h3 className='text-lg font-medium'>Today's Deliveries</h3>
+          <h3 className='text-lg font-medium'>Today&apos;s Deliveries</h3>
           <p className='text-3xl font-bold mt-2'>5</p>
         </div>
         <div className='rounded-lg border p-6'>
