@@ -1,5 +1,7 @@
 'use client'
 
+import type React from 'react'
+
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,7 +18,8 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
-import { Loader2, Plus } from 'lucide-react'
+import { Loader2, Plus, AlertCircle, Copy } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface AddUserDialogProps {
   onUserAdded: () => void
@@ -25,6 +28,9 @@ interface AddUserDialogProps {
 export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [errorDetails, setErrorDetails] = useState<any>(null)
+  const [successData, setSuccessData] = useState<any>(null)
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -37,38 +43,82 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError(null)
+    setErrorDetails(null)
+    setSuccessData(null)
 
     try {
+      console.log('Submitting user creation request:', formData)
+
       const response = await fetch('/api/users/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(formData),
       })
 
+      console.log('Response status:', response.status)
+
       const data = await response.json()
-      if (data.error) throw new Error(data.error)
+      console.log('Response data:', data)
 
-      toast({
-        title: formData.sendInvitation ? 'Invitație trimisă' : 'Utilizator creat',
-        description: formData.sendInvitation
-          ? `Invitația a fost trimisă către ${formData.email}`
-          : `Utilizatorul ${formData.firstName} ${formData.lastName} a fost creat.`,
-      })
+      if (data.error) {
+        setError(data.error)
+        setErrorDetails(data.details)
 
-      setFormData({
-        email: '',
-        firstName: '',
-        lastName: '',
-        role: 'guest',
-        sendInvitation: true,
-      })
-      setOpen(false)
-      onUserAdded()
+        toast({
+          title: 'Error',
+          description: `${data.error}${data.suggestion ? ` - ${data.suggestion}` : ''}`,
+          variant: 'destructive',
+        })
+        return
+      }
+
+      // Handle success
+      setSuccessData(data)
+
+      if (data.invitationSent) {
+        toast({
+          title: 'Invitation Sent',
+          description: `Invitation email sent to ${formData.email}. ${data.note || ''}`,
+        })
+      } else if (data.user?.tempPassword) {
+        toast({
+          title: 'User Created',
+          description: `User created with temporary password. Please share login credentials.`,
+        })
+      } else {
+        toast({
+          title: 'User Created',
+          description: `User ${formData.firstName} ${formData.lastName} has been created successfully.`,
+        })
+      }
+
+      // Don't close dialog immediately if there's a temp password to show
+      if (!data.user?.tempPassword) {
+        // Reset form and close dialog
+        setFormData({
+          email: '',
+          firstName: '',
+          lastName: '',
+          role: 'guest',
+          sendInvitation: true,
+        })
+        setError(null)
+        setErrorDetails(null)
+        setSuccessData(null)
+        setOpen(false)
+        onUserAdded()
+      }
     } catch (error: any) {
       console.error('Error creating user:', error)
+      setError('Network error occurred')
+      setErrorDetails(error.message)
+
       toast({
-        title: 'Eroare',
-        description: error.message || 'Nu s-a putut crea utilizatorul',
+        title: 'Error',
+        description: error.message || 'Failed to create user',
         variant: 'destructive',
       })
     } finally {
@@ -77,7 +127,97 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
   }
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast({
+      title: 'Copied',
+      description: 'Copied to clipboard',
+    })
+  }
+
+  const handleClose = () => {
+    setFormData({
+      email: '',
+      firstName: '',
+      lastName: '',
+      role: 'guest',
+      sendInvitation: true,
+    })
+    setError(null)
+    setErrorDetails(null)
+    setSuccessData(null)
+    setOpen(false)
+    onUserAdded()
+  }
+
+  const runDebugCheck = async () => {
+    try {
+      const response = await fetch('/api/debug-clerk-full')
+      const data = await response.json()
+      console.log('Full Clerk debug info:', data)
+
+      toast({
+        title: 'Debug Complete',
+        description: 'Check browser console for detailed Clerk configuration info',
+      })
+    } catch (error) {
+      console.error('Debug check failed:', error)
+      toast({
+        title: 'Debug Failed',
+        description: 'Could not run debug check',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const testMinimalInvitation = async () => {
+    if (!formData.email) {
+      toast({
+        title: 'Error',
+        description: 'Please enter an email address first',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      const response = await fetch('/api/test-invitation-minimal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      })
+
+      const data = await response.json()
+      console.log('Minimal invitation test result:', data)
+
+      if (data.success) {
+        toast({
+          title: 'Test Successful',
+          description: 'Minimal invitation test passed. Invitations should work.',
+        })
+      } else {
+        toast({
+          title: 'Test Failed',
+          description: data.error || 'Minimal invitation test failed',
+          variant: 'destructive',
+        })
+      }
+    } catch (error) {
+      console.error('Minimal invitation test failed:', error)
+      toast({
+        title: 'Test Failed',
+        description: 'Network error during test',
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
@@ -85,49 +225,125 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
       <DialogTrigger asChild>
         <Button>
           <Plus className='mr-2 h-4 w-4' />
-          Adaugă Utilizator
+          Add User
         </Button>
       </DialogTrigger>
-
-      <DialogContent className='sm:max-w-[425px] bg-background text-foreground shadow-xl rounded-lg'>
+      <DialogContent className='sm:max-w-[500px]'>
         <DialogHeader>
-          <DialogTitle>Adaugă un nou utilizator</DialogTitle>
+          <DialogTitle>Add New User</DialogTitle>
           <DialogDescription>
             {formData.sendInvitation
-              ? 'Se va trimite un email de invitație pentru înregistrare.'
-              : 'Utilizatorul va fi creat direct și trebuie să primească credențiale.'}
+              ? 'Send an invitation email to the user. They will complete their registration via email.'
+              : 'Create a user account directly. The user will need to be given login credentials separately.'}
           </DialogDescription>
         </DialogHeader>
 
+        {error && (
+          <Alert variant='destructive'>
+            <AlertCircle className='h-4 w-4' />
+            <AlertDescription>
+              <div className='space-y-2'>
+                <div>
+                  <strong>Error:</strong> {error}
+                </div>
+                {errorDetails && (
+                  <div className='text-sm'>
+                    <strong>Details:</strong>
+                    <pre className='mt-1 text-xs bg-gray-100 p-2 rounded overflow-auto max-h-32'>
+                      {typeof errorDetails === 'string' ? errorDetails : JSON.stringify(errorDetails, null, 2)}
+                    </pre>
+                  </div>
+                )}
+                <div className='flex gap-2 mt-2'>
+                  <Button size='sm' variant='outline' onClick={runDebugCheck}>
+                    Full Debug
+                  </Button>
+                  <Button size='sm' variant='outline' onClick={testMinimalInvitation}>
+                    Test Invitation
+                  </Button>
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {successData?.user?.tempPassword && (
+          <Alert>
+            <AlertCircle className='h-4 w-4' />
+            <AlertDescription>
+              <div className='space-y-2'>
+                <div>
+                  <strong>User Created Successfully!</strong>
+                </div>
+                <div className='text-sm'>
+                  <strong>Email:</strong> {successData.user.email}
+                </div>
+                <div className='text-sm flex items-center gap-2'>
+                  <strong>Temporary Password:</strong>
+                  <code className='bg-gray-100 px-2 py-1 rounded'>{successData.user.tempPassword}</code>
+                  <Button size='sm' variant='outline' onClick={() => copyToClipboard(successData.user.tempPassword)}>
+                    <Copy className='h-3 w-3' />
+                  </Button>
+                </div>
+                <div className='text-xs text-gray-600'>
+                  Please share these credentials with the user. They will need to change their password on first login.
+                </div>
+                <Button size='sm' onClick={handleClose}>
+                  Close
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className='grid gap-4 py-4'>
-            {[
-              { id: 'email', label: 'Email', type: 'email' },
-              { id: 'firstName', label: 'Prenume', type: 'text' },
-              { id: 'lastName', label: 'Nume', type: 'text' },
-            ].map(({ id, label, type }) => (
-              <div className='grid grid-cols-4 items-center gap-4' key={id}>
-                <Label htmlFor={id} className='text-right'>
-                  {label}
-                </Label>
-                <Input
-                  id={id}
-                  type={type}
-                  value={(formData as any)[id]}
-                  onChange={(e) => handleInputChange(id, e.target.value)}
-                  className='bg-background text-foreground col-span-3'
-                  required
-                />
-              </div>
-            ))}
-
             <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='role' className='text-right'>Rol</Label>
+              <Label htmlFor='email' className='text-right'>
+                Email
+              </Label>
+              <Input
+                id='email'
+                type='email'
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                className='col-span-3'
+                required
+              />
+            </div>
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='firstName' className='text-right'>
+                First Name
+              </Label>
+              <Input
+                id='firstName'
+                value={formData.firstName}
+                onChange={(e) => handleInputChange('firstName', e.target.value)}
+                className='col-span-3'
+                required
+              />
+            </div>
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='lastName' className='text-right'>
+                Last Name
+              </Label>
+              <Input
+                id='lastName'
+                value={formData.lastName}
+                onChange={(e) => handleInputChange('lastName', e.target.value)}
+                className='col-span-3'
+                required
+              />
+            </div>
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='role' className='text-right'>
+                Role
+              </Label>
               <Select value={formData.role} onValueChange={(value) => handleInputChange('role', value)}>
                 <SelectTrigger className='col-span-3'>
-                  <SelectValue placeholder='Alege un rol' />
+                  <SelectValue placeholder='Select role' />
                 </SelectTrigger>
-                <SelectContent className='bg-background text-foreground'>
+                <SelectContent>
                   <SelectItem value='admin'>Administrator</SelectItem>
                   <SelectItem value='manager'>Warehouse Manager</SelectItem>
                   <SelectItem value='inventory'>Inventory Specialist</SelectItem>
@@ -137,9 +353,10 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
                 </SelectContent>
               </Select>
             </div>
-
             <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='sendInvitation' className='text-right'>Invitație</Label>
+              <Label htmlFor='sendInvitation' className='text-right'>
+                Send Invitation
+              </Label>
               <div className='col-span-3 flex items-center space-x-2'>
                 <Checkbox
                   id='sendInvitation'
@@ -147,19 +364,18 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
                   onCheckedChange={(checked) => handleInputChange('sendInvitation', checked as boolean)}
                 />
                 <Label htmlFor='sendInvitation' className='text-sm font-normal'>
-                  Trimite email de invitație
+                  Send invitation email (with fallback to direct creation)
                 </Label>
               </div>
             </div>
           </div>
-
           <DialogFooter>
             <Button type='button' variant='outline' onClick={() => setOpen(false)} disabled={loading}>
-              Anulează
+              Cancel
             </Button>
             <Button type='submit' disabled={loading}>
               {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-              {formData.sendInvitation ? 'Trimite invitația' : 'Creează utilizatorul'}
+              {formData.sendInvitation ? 'Send Invitation' : 'Create User'}
             </Button>
           </DialogFooter>
         </form>

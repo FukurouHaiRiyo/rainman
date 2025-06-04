@@ -55,28 +55,22 @@ export async function POST(request: NextRequest) {
     }
 
     if (sendInvitation) {
-      // Send invitation - User will be created when they accept
-      try {
-        console.log('Attempting to send invitation...')
+      // Try to send invitation with multiple fallback approaches
+      console.log('Attempting to send invitation...')
 
+      // Approach 1: Try with minimal data
+      try {
+        console.log('Trying minimal invitation...')
         const invitation = await clerkClient.invitations.createInvitation({
           emailAddress: email,
-          publicMetadata: {
-            role,
-            firstName,
-            lastName,
-          },
-          redirectUrl: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || '/dashboard',
         })
 
-        console.log('Invitation sent successfully:', {
-          id: invitation.id,
-          status: invitation.status,
-          emailAddress: invitation.emailAddress,
-        })
+        console.log('Minimal invitation sent successfully:', invitation.id)
 
-        // Pre-create user data in Firebase for invitation tracking
+        // Update the invitation with metadata using a separate call
         try {
+          // Note: Clerk doesn't allow updating invitation metadata after creation
+          // So we'll store this in Firebase instead
           const { getFirebaseAdminDatabase } = await import('@/app/lib/firebase-admin')
           const database = getFirebaseAdminDatabase()
 
@@ -92,10 +86,9 @@ export async function POST(request: NextRequest) {
           }
 
           await database.ref(`invitations/${invitation.id}`).set(invitationData)
-          console.log('Invitation data saved to Firebase')
+          console.log('Invitation metadata saved to Firebase')
         } catch (firebaseError) {
-          console.error('Error saving invitation to Firebase:', firebaseError)
-          // Continue even if Firebase save fails
+          console.error('Error saving invitation metadata:', firebaseError)
         }
 
         return NextResponse.json({
@@ -105,23 +98,89 @@ export async function POST(request: NextRequest) {
           email,
           role,
           invitationSent: true,
+          note: 'User will need to set their role after registration',
         })
-      } catch (invitationError: any) {
-        console.error('Error sending invitation:', invitationError)
-        return NextResponse.json(
-          {
-            error: 'Failed to send invitation',
-            details: invitationError.errors || invitationError.message,
-          },
-          { status: 500 },
-        )
+      } catch (minimalError: any) {
+        console.error('Minimal invitation failed:', minimalError)
+
+        // Approach 2: Create user directly and send custom email
+        console.log('Invitation failed, creating user directly and sending custom notification...')
+
+        try {
+          // Create user in Clerk with a temporary password
+          const tempPassword = Math.random().toString(36).slice(-12) + 'A1!'
+          const newUser = await clerkClient.users.createUser({
+            emailAddress: [email],
+            firstName,
+            lastName,
+            password: tempPassword,
+            publicMetadata: {
+              role,
+              needsPasswordReset: true,
+            },
+          })
+
+          console.log('User created directly:', newUser.id)
+
+          // Save user to Firebase
+          try {
+            const { getFirebaseAdminDatabase } = await import('@/app/lib/firebase-admin')
+            const database = getFirebaseAdminDatabase()
+
+            const userData = {
+              id: newUser.id,
+              email,
+              firstName,
+              lastName,
+              role,
+              status: 'active',
+              needsPasswordReset: true,
+              tempPassword: tempPassword, // Store temporarily for admin to share
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            }
+
+            await database.ref(`users/${newUser.id}`).set(userData)
+            console.log('User saved to Firebase')
+          } catch (firebaseError) {
+            console.error('Error saving user to Firebase:', firebaseError)
+          }
+
+          return NextResponse.json({
+            success: true,
+            message: 'User created successfully (invitation system unavailable)',
+            user: {
+              id: newUser.id,
+              email,
+              firstName,
+              lastName,
+              role,
+              tempPassword: tempPassword,
+            },
+            invitationSent: false,
+            note: 'Invitation system failed. User created with temporary password. Please share login credentials manually.',
+          })
+        } catch (directCreationError: any) {
+          console.error('Direct user creation also failed:', directCreationError)
+
+          return NextResponse.json(
+            {
+              error: 'Failed to send invitation and create user',
+              details: {
+                invitationError: minimalError.message,
+                creationError: directCreationError.message,
+              },
+              suggestion: 'Check Clerk configuration and try creating user without invitation',
+            },
+            { status: 500 },
+          )
+        }
       }
     } else {
-      // Create user directly in both Clerk and Firebase
+      // Create user directly (existing logic)
       try {
         console.log('Creating user directly...')
 
-        // Create user in Clerk
         const newUser = await clerkClient.users.createUser({
           emailAddress: [email],
           firstName,
@@ -135,9 +194,8 @@ export async function POST(request: NextRequest) {
 
         console.log('User created in Clerk:', newUser.id)
 
-        // Save user to Firebase Realtime Database
+        // Save user to Firebase
         try {
-          console.log('Saving user to Firebase...')
           const { getFirebaseAdminDatabase } = await import('@/app/lib/firebase-admin')
           const database = getFirebaseAdminDatabase()
 
@@ -150,19 +208,12 @@ export async function POST(request: NextRequest) {
             status: 'active',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            lastLogin: null,
           }
 
-          // Save to users collection
           await database.ref(`users/${newUser.id}`).set(userData)
           console.log('User saved to Firebase successfully')
-
-          // Update stats
-          await database.ref(`stats/totalUsers`).transaction((current) => (current || 0) + 1)
-          await database.ref(`stats/usersByRole/${role}`).transaction((current) => (current || 0) + 1)
         } catch (firebaseError) {
           console.error('Error saving user to Firebase:', firebaseError)
-          // If Firebase fails, we should still return success since user was created in Clerk
         }
 
         return NextResponse.json({
