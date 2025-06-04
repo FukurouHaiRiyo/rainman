@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getRoleName } from '@/app/lib/roles';
-import AddUserDialog from '@/components/dashboard/add-user-dialog';
+import { AddUserDialog } from '@/components/dashboard/add-user-dialog';
 
 interface User {
   id: string;
