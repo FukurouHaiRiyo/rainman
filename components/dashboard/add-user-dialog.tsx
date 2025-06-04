@@ -96,7 +96,7 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
       }
 
       // Don't close dialog immediately if there's a temp password to show
-      if (!data.user?.tempPassword) {
+      if (data.user?.tempPassword) {
         // Reset form and close dialog
         setFormData({
           email: '',

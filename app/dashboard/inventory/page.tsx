@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useFirebaseData } from '@/app/lib/firebase'
 import { Badge } from '@/components/ui/badge'
 
+// Inventory dashboard specialist
+
 export default function InventoryDashboard() {
   const { data: inventory } = useFirebaseData('inventory');
 

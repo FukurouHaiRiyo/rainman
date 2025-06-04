@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirebaseData } from '@/app/lib/firebase';
 import { Badge } from '@/components/ui/badge';
 
+// driver coordinator page
+
 const DriverCoordinatorDashboard = () => {
   const { data: drivers } = useFirebaseData('drivers');
   const { data: doorActivity } = useFirebaseData('doorActivity');
