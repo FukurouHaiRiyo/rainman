@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster"
 import Footer from "@/components/Footer";
 import Header from "@/components/Header/page";
 import { Providers } from "./provider"
+import { FirebaseAuthProvider } from "@/context/firebase-auth-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -30,13 +31,17 @@ export default async function RootLayout({
         <body className={`${inter.className}`}>
           {userId ? (
             <>
-              {children}
-              <Toaster />
+              <FirebaseAuthProvider>
+                {children}
+                <Toaster />
+              </FirebaseAuthProvider>
             </>
           ): (
             <>
               <Header />
-              {children}
+              <FirebaseAuthProvider>
+                {children}
+              </FirebaseAuthProvider>
               <Toaster />
               <Footer />
             </>
