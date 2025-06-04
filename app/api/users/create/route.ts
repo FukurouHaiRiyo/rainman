@@ -1,11 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { auth } from "@clerk/nextjs/server"
-import { clerkClient } from "@clerk/clerk-sdk-node"
+import { auth, clerkClient } from "@clerk/nextjs/server"
 
 export async function POST(request: NextRequest) {
   try {
     // Check if user is authenticated and is admin
-    const { userId } = await auth()
+    const { userId } = auth()
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -18,11 +17,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Forbidden - Admin access required" }, { status: 403 })
     }
 
-    const { email, firstName, lastName, role, sendInvitation } = await request.json()
+    const body = await request.json()
+    const { email, firstName, lastName, role, sendInvitation } = body
+
+    console.log("Creating user with data:", { email, firstName, lastName, role, sendInvitation })
 
     // Validate required fields
     if (!email || !firstName || !lastName || !role) {
       return NextResponse.json({ error: "Missing required fields: email, firstName, lastName, role" }, { status: 400 })
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
     }
 
     // Validate role
@@ -46,45 +54,83 @@ export async function POST(request: NextRequest) {
     }
 
     let newUser
-    const invitationSent = false
+    let invitationSent = false
 
     if (sendInvitation) {
+      // Send invitation instead of creating user directly
       try {
-        const invitation = await clerkClient.invitations.createInvitation({
+        console.log("Attempting to send invitation...")
+
+        // Prepare invitation data
+        const invitationData = {
           emailAddress: email,
           publicMetadata: {
             role,
+            firstName,
+            lastName,
           },
-          redirectUrl:
-            process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL ||
-            `${process.env.NEXT_PUBLIC_APP_URL || "https://rainman-beta.vercel.app"}/dashboard`,
-        });
-
-        if (!invitation || !invitation.id) {
-          throw new Error("Clerk did not return a valid invitation ID.");
         }
 
-        console.log("Invitation sent successfully:", invitation.id);
+        // Add redirect URL if available
+        const redirectUrl = process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
+        if (redirectUrl) {
+          invitationData.redirectUrl = redirectUrl
+        }
+
+        console.log("Invitation data:", invitationData)
+
+        const invitation = await clerkClient.invitations.createInvitation(invitationData)
+
+        invitationSent = true
+        console.log("Invitation sent successfully:", invitation.id)
 
         return NextResponse.json({
           success: true,
           message: "Invitation sent successfully",
           invitationId: invitation.id,
-        });
-
+          email,
+          role,
+        })
       } catch (invitationError: any) {
-        console.error("Error sending invitation:", invitationError);
-        return NextResponse.json(
-          {
-            error: "Failed to send invitation",
-            details: invitationError.errors || invitationError.message,
-          },
-          { status: 500 }
-        );
+        console.error("Error sending invitation:", invitationError)
+        console.error("Full invitation error:", {
+          status: invitationError.status,
+          message: invitationError.message,
+          errors: invitationError.errors,
+          clerkTraceId: invitationError.clerkTraceId,
+        })
+
+        // If invitation fails, try creating user directly instead
+        console.log("Invitation failed, attempting to create user directly...")
+        try {
+          newUser = await clerkClient.users.createUser({
+            emailAddress: [email],
+            firstName,
+            lastName,
+            publicMetadata: {
+              role,
+            },
+            skipPasswordChecks: true,
+            skipPasswordRequirement: true,
+          })
+
+          console.log("User created directly after invitation failure:", newUser.id)
+        } catch (directCreationError: any) {
+          console.error("Direct user creation also failed:", directCreationError)
+          return NextResponse.json(
+            {
+              error: "Failed to send invitation and create user",
+              invitationError: invitationError.errors || invitationError.message,
+              creationError: directCreationError.errors || directCreationError.message,
+            },
+            { status: 500 },
+          )
+        }
       }
     } else {
       // Create user directly
       try {
+        console.log("Creating user directly...")
         newUser = await clerkClient.users.createUser({
           emailAddress: [email],
           firstName,
@@ -109,11 +155,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Save user to Firebase (only if user was created, not for invitations)
+    // Save user to Firebase (only if user was created, not for successful invitations)
     if (newUser) {
       try {
+        console.log("Saving user to Firebase...")
         // Import Firebase Admin dynamically to avoid initialization issues
-        const { getFirebaseAdminDatabase } = await import("@/app/lib/firebase-admin")
+        const { getFirebaseAdminDatabase } = await import("@/lib/firebase-admin")
         const database = getFirebaseAdminDatabase()
 
         const userData = {
@@ -136,16 +183,25 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `User ${sendInvitation ? "invitation sent" : "created"} successfully`,
+      message: invitationSent
+        ? "Invitation sent successfully"
+        : newUser
+          ? "User created successfully"
+          : "User processed successfully",
       user: newUser
         ? {
-          id: newUser.id,
-          email,
-          firstName,
-          lastName,
-          role,
-        }
-        : undefined,
+            id: newUser.id,
+            email,
+            firstName,
+            lastName,
+            role,
+          }
+        : {
+            email,
+            firstName,
+            lastName,
+            role,
+          },
       invitationSent,
     })
   } catch (error: any) {
