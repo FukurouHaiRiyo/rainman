@@ -89,7 +89,7 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className='sm:max-w-[425px] bg-background text-foreground'>
+      <DialogContent className='sm:max-w-[425px] bg-background text-foreground shadow-xl rounded-lg'>
         <DialogHeader>
           <DialogTitle>Adaugă un nou utilizator</DialogTitle>
           <DialogDescription>
@@ -115,7 +115,7 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
                   type={type}
                   value={(formData as any)[id]}
                   onChange={(e) => handleInputChange(id, e.target.value)}
-                  className='col-span-3'
+                  className='bg-background text-foreground col-span-3'
                   required
                 />
               </div>
