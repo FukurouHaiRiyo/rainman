@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { auth } from "@clerk/nextjs/server"
-import { clerkClient } from "@clerk/clerk-sdk-node"
+import { auth, clerkClient as getClerkClient } from "@clerk/nextjs/server"
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,6 +10,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get current user to check if they're admin
+    const clerkClient = await getClerkClient()
     const currentUser = await clerkClient.users.getUser(userId)
     const currentUserRole = currentUser.publicMetadata?.role as string
 
@@ -54,43 +54,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to check existing users" }, { status: 500 })
     }
 
-    let newUser
-    let invitationSent = false
-
     if (sendInvitation) {
-      // Send invitation instead of creating user directly
+      // Send invitation - DO NOT create user directly
       try {
         console.log("Attempting to send invitation...")
 
-        // Prepare invitation data
-        const invitationData: {
-          emailAddress: string
-          publicMetadata: {
-            role: string
-            firstName: string
-            lastName: string
-          }
-          redirectUrl?: string
-        } = {
+        const invitation = await clerkClient.invitations.createInvitation({
           emailAddress: email,
           publicMetadata: {
             role,
             firstName,
             lastName,
           },
-        }
+          redirectUrl: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || "/dashboard",
+        })
 
-        // Add redirect URL if available
-        const redirectUrl = process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
-        if (redirectUrl) {
-          invitationData.redirectUrl = redirectUrl
-        }
-
-        console.log("Invitation data:", invitationData)
-
-        const invitation = await clerkClient.invitations.createInvitation(invitationData)
-
-        invitationSent = true
         console.log("Invitation sent successfully:", invitation.id)
 
         return NextResponse.json({
@@ -99,6 +77,7 @@ export async function POST(request: NextRequest) {
           invitationId: invitation.id,
           email,
           role,
+          invitationSent: true,
         })
       } catch (invitationError: any) {
         console.error("Error sending invitation:", invitationError)
@@ -109,38 +88,21 @@ export async function POST(request: NextRequest) {
           clerkTraceId: invitationError.clerkTraceId,
         })
 
-        // If invitation fails, try creating user directly instead
-        console.log("Invitation failed, attempting to create user directly...")
-        try {
-          newUser = await clerkClient.users.createUser({
-            emailAddress: [email],
-            firstName,
-            lastName,
-            publicMetadata: {
-              role,
-            },
-            skipPasswordChecks: true,
-            skipPasswordRequirement: true,
-          })
-
-          console.log("User created directly after invitation failure:", newUser.id)
-        } catch (directCreationError: any) {
-          console.error("Direct user creation also failed:", directCreationError)
-          return NextResponse.json(
-            {
-              error: "Failed to send invitation and create user",
-              invitationError: invitationError.errors || invitationError.message,
-              creationError: directCreationError.errors || directCreationError.message,
-            },
-            { status: 500 },
-          )
-        }
+        // Return the actual invitation error instead of falling back
+        return NextResponse.json(
+          {
+            error: "Failed to send invitation",
+            details: invitationError.errors || invitationError.message,
+            clerkTraceId: invitationError.clerkTraceId,
+          },
+          { status: 500 },
+        )
       }
     } else {
-      // Create user directly
+      // Create user directly (only when invitation is not requested)
       try {
         console.log("Creating user directly...")
-        newUser = await clerkClient.users.createUser({
+        const newUser = await clerkClient.users.createUser({
           emailAddress: [email],
           firstName,
           lastName,
@@ -152,6 +114,42 @@ export async function POST(request: NextRequest) {
         })
 
         console.log("User created successfully:", newUser.id)
+
+        // Save user to Firebase
+        try {
+          console.log("Saving user to Firebase...")
+          const { getFirebaseAdminDatabase } = await import("@/app/lib/firebase-admin")
+          const database = getFirebaseAdminDatabase()
+
+          const userData = {
+            id: newUser.id,
+            email,
+            firstName,
+            lastName,
+            role,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }
+
+          await database.ref(`users/${newUser.id}`).set(userData)
+          console.log("User saved to Firebase successfully")
+        } catch (firebaseError) {
+          console.error("Error saving user to Firebase:", firebaseError)
+          // Continue even if Firebase save fails - user is still created in Clerk
+        }
+
+        return NextResponse.json({
+          success: true,
+          message: "User created successfully",
+          user: {
+            id: newUser.id,
+            email,
+            firstName,
+            lastName,
+            role,
+          },
+          invitationSent: false,
+        })
       } catch (userCreationError: any) {
         console.error("Error creating user:", userCreationError)
         return NextResponse.json(
@@ -163,61 +161,11 @@ export async function POST(request: NextRequest) {
         )
       }
     }
-
-    // Save user to Firebase (only if user was created, not for successful invitations)
-    if (newUser) {
-      try {
-        console.log("Saving user to Firebase...")
-        // Import Firebase Admin dynamically to avoid initialization issues
-        const { getFirebaseAdminDatabase } = await import("@/app/lib/firebase-admin")
-        const database = getFirebaseAdminDatabase()
-
-        const userData = {
-          id: newUser.id,
-          email,
-          firstName,
-          lastName,
-          role,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }
-
-        await database.ref(`users/${newUser.id}`).set(userData)
-        console.log("User saved to Firebase successfully")
-      } catch (firebaseError) {
-        console.error("Error saving user to Firebase:", firebaseError)
-        // Continue even if Firebase save fails - user is still created in Clerk
-      }
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: invitationSent
-        ? "Invitation sent successfully"
-        : newUser
-          ? "User created successfully"
-          : "User processed successfully",
-      user: newUser
-        ? {
-            id: newUser.id,
-            email,
-            firstName,
-            lastName,
-            role,
-          }
-        : {
-            email,
-            firstName,
-            lastName,
-            role,
-          },
-      invitationSent,
-    })
   } catch (error: any) {
     console.error("Error in user creation:", error)
     return NextResponse.json(
       {
-        error: "Failed to create user",
+        error: "Failed to process request",
         details: error.message || "Unknown error",
       },
       { status: 500 },
