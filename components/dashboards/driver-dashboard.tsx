@@ -3,16 +3,16 @@ export function DriverDashboard() {
     <div className='grid gap-6'>
       <div className='grid gap-6 md:grid-cols-2'>
         <div className='rounded-lg border p-6'>
-          <h3 className='text-lg font-medium'>Today&apos;s Deliveries</h3>
+          <h3 className='text-lg font-medium'>Livrările de astăzi</h3>
           <p className='text-3xl font-bold mt-2'>5</p>
         </div>
         <div className='rounded-lg border p-6'>
-          <h3 className='text-lg font-medium'>Available Doors</h3>
+          <h3 className='text-lg font-medium'>Uși disponibile</h3>
           <p className='text-3xl font-bold mt-2'>3</p>
         </div>
       </div>
       <div className='rounded-lg border p-6'>
-        <h3 className='text-lg font-medium mb-4'>Delivery Schedule</h3>
+        <h3 className='text-lg font-medium mb-4'>Program de livrare</h3>
         <div className='space-y-4'>
           <div className='p-3 border rounded-lg'>
             <div className='flex justify-between items-center'>
