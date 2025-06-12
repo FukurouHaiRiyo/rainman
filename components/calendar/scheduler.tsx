@@ -94,7 +94,7 @@ export default function OrderCalendar() {
                 Schedule Order
               </Button>
             </DialogTrigger>
-            <DialogContent className='sm:max-w-[500px]'>
+            <DialogContent className='sm:max-w-[500px] radix-dialog-content'>
               <DialogHeader>
                 <DialogTitle>Schedule New Order</DialogTitle>
                 <DialogDescription>Add a new order to the calendar.</DialogDescription>

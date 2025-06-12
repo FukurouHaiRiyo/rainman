@@ -281,7 +281,7 @@ const OrdersOverview = ({ detailed = false }: { detailed?: boolean }) => {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className='sm:max-w-[500px]'>
+            <DialogContent className='sm:max-w-[500px] radix-dialog-content'>
               <DialogHeader>
                 <DialogTitle>
                   {isEditing ? 'Edit Order': 'Create new'} 

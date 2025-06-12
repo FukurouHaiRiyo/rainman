@@ -134,3 +134,7 @@
     @apply inline-flex;
   }
 }
+
+.radix-dialog-content {
+  @apply bg-white dark:bg-[#1f1f1f] shadow-lg rounded-md;
+}

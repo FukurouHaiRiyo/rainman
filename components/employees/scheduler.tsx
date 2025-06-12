@@ -61,7 +61,7 @@ const EmployeeScheduler = () => {
     <>
       <div className='flex items-center justify-between'>
         <div className='space-y-1'>
-          <h2 className='text-2xl font-semibold tracking-tight'>Programat angajați</h2>
+          <h2 className='text-2xl font-semibold tracking-tight'>Program angajați</h2>
           <p className='text-sm text-muted-foreground'>Gestionați programul de lucru al angajaților</p>
         </div>
 

@@ -54,7 +54,7 @@ const ProductionTimeline = () => {
                 {formattedDate}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className='w-auto p-0'>
+            <PopoverContent className='w-auto p-0 radix-dialog-content'>
               <Calendar mode='single' selected={date} onSelect={(date) => date && setDate(date)} initialFocus />
             </PopoverContent>
           </Popover>

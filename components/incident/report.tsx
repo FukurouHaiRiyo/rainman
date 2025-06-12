@@ -233,7 +233,7 @@ const IncidentReport = () => {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className='sm:max-w-[600px]'>
+            <DialogContent className='sm:max-w-[600px] radix-dialog-content'>
               <DialogHeader>
                 <DialogTitle>{isEditing ? 'Editați raportul de incident' : 'Raportați un nou incident'}</DialogTitle>
                 <DialogDescription>
