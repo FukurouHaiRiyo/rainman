@@ -5,6 +5,8 @@ import { ClerkProvider } from "@clerk/nextjs"
 import { auth } from "@clerk/nextjs/server"
 import { Toaster } from "@/components/ui/toaster"
 
+import "@/app/globals.css";
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header/page";
 import { Providers } from "./provider"
