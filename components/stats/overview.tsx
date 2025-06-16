@@ -19,19 +19,19 @@ export default function StatsOverview() {
     <div className="w-full h-[300px] flex items-end justify-between gap-2">
       {stats
         ? stats.map((day: any, index: number) => (
-            <div key={index} className="flex flex-col items-center">
-              <div className="w-12 bg-primary/80 rounded-t-md" style={{ height: `${day.value * 2}px` }}></div>
-              <div className="text-xs mt-2">{day.label}</div>
-            </div>
-          ))
+          <div key={index} className="flex flex-col items-center">
+            <div className="w-12 bg-primary/80 rounded-t-md" style={{ height: `${day.value * 2}px` }}></div>
+            <div className="text-xs mt-2">{day.label}</div>
+          </div>
+        ))
         : Array(7)
-            .fill(0)
-            .map((_, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="w-12 bg-muted rounded-t-md" style={{ height: `${Math.random() * 100 + 50}px` }}></div>
-                <div className="text-xs mt-2">Day {index + 1}</div>
-              </div>
-            ))}
+          .fill(0)
+          .map((_, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="w-12 bg-muted rounded-t-md" style={{ height: `${Math.random() * 100 + 50}px` }}></div>
+              <div className="text-xs mt-2">Day {index + 1}</div>
+            </div>
+          ))}
     </div>
   )
 }

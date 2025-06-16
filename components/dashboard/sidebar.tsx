@@ -60,7 +60,7 @@ export function Sidebar1() {
     {
       name: "overview",
       label: "Overview",
-      href: "/Admin",
+      href: "/dashboard",
       icon: LayoutDashboard,
     },
     {
