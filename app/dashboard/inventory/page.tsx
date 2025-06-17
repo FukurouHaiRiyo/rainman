@@ -76,9 +76,11 @@ export default function InventoryOverview() {
   const confirmDelete = async () => {
     if (!selectedItem) return
     const result = await firebaseService.delete("inventory", selectedItem.id)
-    result.success
-      ? toast({ title: "Item deleted", description: "Item removed successfully." })
-      : toast({ title: "Error", description: "Failed to delete item.", variant: "destructive" })
+    if (result.success) {
+      toast({ title: "Item deleted", description: "Item removed successfully." });
+    } else {
+      toast({ title: "Error", description: "Failed to delete item.", variant: "destructive" });
+    }
     refreshData()
     setDeleteDialogOpen(false)
     setSelectedItem(null)
@@ -102,9 +104,18 @@ export default function InventoryOverview() {
       ? await firebaseService.update("inventory", selectedItem.id, itemData)
       : await firebaseService.create("inventory", itemData)
 
-    result.success
-      ? toast({ title: isEditing ? "Item updated" : "Item added", description: "Success." })
-      : toast({ title: "Error", description: "Operation failed.", variant: "destructive" })
+    if (result.success) {
+      toast({
+        title: isEditing ? "Item updated" : "Item added",
+        description: "Success.",
+      })
+    } else {
+      toast({
+        title: "Error",
+        description: "Operation failed.",
+        variant: "destructive",
+      })
+    }
 
     resetForm()
     setOpen(false)
@@ -144,7 +155,7 @@ export default function InventoryOverview() {
       </div>
 
       {/* Inventory CRUD UI */}
-            {/* Search & Add Item Section */}
+      {/* Search & Add Item Section */}
       <div className="flex items-center justify-between mt-8">
         <Dialog
           open={open}
@@ -281,7 +292,7 @@ export default function InventoryOverview() {
                                   : "outline"
                           }
                         >
-                          {item.status.replace("-", " ").replace(/\b\w/g, (c:any) => c.toUpperCase())}
+                          {item.status.replace("-", " ").replace(/\b\w/g, (c: any) => c.toUpperCase())}
                         </Badge>
                       </TableCell>
                       <TableCell>{item.lastUpdated}</TableCell>
