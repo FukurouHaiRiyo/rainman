@@ -4,9 +4,7 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirebaseData } from '@/app/lib/firebase';
 import { Badge } from '@/components/ui/badge';
-import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
 import {
   Dialog,
   DialogContent,
@@ -19,163 +17,150 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useFirebaseData, firebaseService } from '@/app/lib/firebase';
+import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
-import { useUserRole } from '@/context/user-context';
 
-const EmployeeScheduler = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+export default function EmployeeScheduler() {
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const { data: employees, loading } = useFirebaseData('employees');
-  const { data: shifts } = useFirebaseData('shifts');
+  const [formData, setFormData] = useState({ userId: '', date: '', shift: '', role: '' });
   const { toast } = useToast();
 
-  const { role, isLoading } = useUserRole()
+  const { data: employees } = useFirebaseData('employees');
+  const { data: shifts, refreshData } = useFirebaseData('shifts');
 
-  const startDate = startOfWeek(currentDate, { weekStartsOn: 1 }) // Start from Monday
-  const endDate = endOfWeek(currentDate, { weekStartsOn: 1 }) // End on Sunday
+  const startDate = startOfWeek(currentDate, { weekStartsOn: 1 });
+  const endDate = endOfWeek(currentDate, { weekStartsOn: 1 });
 
-  const handlePreviousWeek = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(newDate.getDate() - 7);
-    setCurrentDate(newDate);
-  }
-
-  const handleNextsWeek = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(newDate.getDate() + 7);
-    setCurrentDate(newDate);
-  }
-
-  // Generate array of dates for the week
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const day = addDays(startDate, i);
+
     return {
-      date: day,
+      fullDate: format(day, 'yyyy-MM-dd'),
       dayName: format(day, 'EEE'),
       dayNumber: format(day, 'd'),
-      fullDate: format(day, 'yyyy-MM-dd'),
     }
   });
+
+  const handleSubmit = async () => {
+    if (!formData.userId || !formData.date || !formData.shift || !formData.role) {
+      toast({ title: 'Error', description: 'All fields are required.', variant: 'destructive' });
+      return;
+    }
+
+    const result = await firebaseService.create('shifts', formData);
+
+    if (result.success) {
+      toast({ title: 'Schimb programat', description: 'Tura pentru angajat a fost adăugată.' })
+      refreshData()
+      setOpen(false)
+      setFormData({ userId: '', date: '', shift: '', role: '' })
+    } else {
+      toast({ title: 'Error', description: 'Nu s-a putut programa tura.', variant: 'destructive' })
+    }
+  }
 
   return (
     <>
       <div className='flex items-center justify-between'>
         <div className='space-y-1'>
-          <h2 className='text-2xl font-semibold tracking-tight'>Program angajați</h2>
-          <p className='text-sm text-muted-foreground'>Gestionați programul de lucru al angajaților</p>
+          <h2 className='text-2xl font-semibold tracking-tight'>
+            Programat de angajați
+          </h2>
+
+          <p className='text-sm text-muted-foreground'>
+            Gestionați programul de lucru al angajaților
+          </p>
         </div>
 
-        <div className='flex items-center gap-2'>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-            { role !== 'admin' ? (<Button>
-                <Plus className='mr-2 h-4 w-4' />
-                Add shift
-              </Button>): null}
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className='mr-2 h-4 w-4' />
+              Adăugați tură
+            </Button>
+          </DialogTrigger>
 
-            <DialogContent className='sm:max-w-[500px]'>
-              <DialogHeader>
-                <DialogTitle> Programați un nou schimb </DialogTitle>
-                <DialogDescription> Atribuiți o tură unui angajat. </DialogDescription>
-              </DialogHeader>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Programați un nou schimb
+              </DialogTitle>
 
-              <div className='grid gap-4 py-4'>
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='employee' className='text-right'>
-                    Angajat
-                  </Label>
+              <DialogDescription>
+                Atribuiți o tură unui angajat.
+              </DialogDescription>
+            </DialogHeader>
 
-                  <Select>
-                    <SelectTrigger className='col-span-3'>
-                      <SelectValue placeholder='Selectează angajat' />
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      {employees?.map((employee: any) => (
-                        <SelectItem key={employee.id} value={employee.id}>
-                          {employee.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='date' className='text-right'>
-                    Data
-                  </Label>
-                  <Input id='date' type='date' className='col-span-3' />
-                </div>
-
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='shift' className='text-right'>
-                    Tura
-                  </Label>
-
-                  <Select>
-                    <SelectTrigger className='col-span-3'>
-                      <SelectValue placeholder='Selectează tură'/>
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      <SelectItem value='morning'>Dimineaţa (6:00 - 14:00)</SelectItem>
-                      <SelectItem value='afternoon'>După-amiază (14:00 - 22:00)</SelectItem>
-                      <SelectItem value='night'>Noaptea (22:00 - 6:00)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className='grrid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='role' className='text-right'>
-                    Rol
-                  </Label>
-
-                  <Select>
-                    <SelectTrigger className='col-span-3'>
-                      <SelectValue placeholder='Selectează rol'/>
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      <SelectItem value='picker'>Picker</SelectItem>
-                      <SelectItem value='packer'>Packer</SelectItem>
-                      <SelectItem value='loader'>Loader</SelectItem>
-                      <SelectItem value='supervisor'>Supervizor</SelectItem>
-                      <SelectItem value='driver'>Șofer</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <div className='grid gap-4 py-4'> 
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label> Angajat </Label>
+                <Select value={formData.userId} onValueChange={(v) => setFormData({ ...formData, userId: v })}>
+                  <SelectTrigger className='col-span-3'><SelectValue placeholder='Select employee' /></SelectTrigger>
+                  <SelectContent>
+                    {employees?.map((emp: any) => (
+                      <SelectItem key={emp.id} value={emp.id}>{emp.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              <DialogFooter>
-                <Button type='submit' onClick={() => {setOpen(false); toast({title: 'Schimbul a fost salvat', description: 'Schimbul angajatului a fost adăugat.'})}}>
-                  Programează schimb
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label>Data</Label>
+                <Input type='date' className='col-span-3' value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} />
+              </div>
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label>Tura</Label>
+                <Select value={formData.shift} onValueChange={(v) => setFormData({ ...formData, shift: v })}>
+                  <SelectTrigger className='col-span-3'><SelectValue placeholder='Select shift' /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='morning'>Morning (6–14)</SelectItem>
+                    <SelectItem value='afternoon'>Afternoon (14–22)</SelectItem>
+                    <SelectItem value='night'>Night (22–6)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label>Rol</Label>
+                <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
+                  <SelectTrigger className='col-span-3'><SelectValue placeholder='Select role' /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='picker'>Picker</SelectItem>
+                    <SelectItem value='packer'>Packer</SelectItem>
+                    <SelectItem value='loader'>Loader</SelectItem>
+                    <SelectItem value='supervisor'>Supervisor</SelectItem>
+                    <SelectItem value='driver'>Driver</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button onClick={handleSubmit}> Program de schimb </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className='flex items-center justify-between mt-4'>
-        <Button variant='outline' size='sm' onClick={handlePreviousWeek}>
-          <ChevronLeft className='h-4 w-4 mr-2' />
-          Săptămâna anterioară
+        <Button variant='outline' onClick={() => setCurrentDate(addDays(currentDate, -7))}>
+          <ChevronLeft className='h-4 w-4 mr-2' /> Săptămâna anterioară
         </Button>
-
         <div className='text-sm font-medium'>
-          {format(startDate, 'MMMM d, yyyy')} - {format(endDate, 'MMMM d, yyyy')}
+          {format(startDate, 'MMMM d, yyyy')} – {format(endDate, 'MMMM d, yyyy')}
         </div>
-
-        <Button variant='outline' size='sm' onClick={handleNextsWeek}>
-          <ChevronRight className='h-4 w-4 mr-2' />
-          Săptămâna viitoare
+        <Button variant='outline' onClick={() => setCurrentDate(addDays(currentDate, 7))}>
+          Săptămâna viitoare <ChevronRight className='h-4 w-4 ml-2' />
         </Button>
       </div>
 
       <Card className='mt-4'>
-        <CardHeader>
-          Program săptămânal
+        <CardHeader> 
+          <CardTitle>
+            Program săptămânal
+          </CardTitle>
         </CardHeader>
 
         <CardContent>
@@ -183,9 +168,12 @@ const EmployeeScheduler = () => {
             <table className='w-full border-collapse'>
               <thead>
                 <tr>
-                  <th className='border p-2 bg-muted text-left'> Angajat </th>
-                  {weekDays.map((day, index) => (
-                    <th key={index} className='border p-2 bg-muted text-center'>
+                  <th className='border p-2 bg-muted text-left'>
+                    Angajat
+                  </th>
+
+                  {weekDays.map((day, i) => (
+                    <th key={i} className='border p-2 bg-muted text-center'>
                       <div>{day.dayName}</div>
                       <div>{day.dayNumber}</div>
                     </th>
@@ -194,50 +182,41 @@ const EmployeeScheduler = () => {
               </thead>
 
               <tbody>
-                {employees?.map((employee: any) => (
-                  <tr key={employee.id}>
+                {employees?.map((emp: any) => (
+                  <tr key={emp.id}>
                     <td className='border p-2'>
                       <div className='flex items-center gap-2'>
                         <User className='h-4 w-4' />
-
                         <div>
-                          <div className='font-medium'>{employee.name}</div>
-                          <div className='text-xs text-muted-foreground'>{employee.role}</div>
+                          <div className='font-medium'>{emp.name}</div>
+                          <div className='text-xs text-muted-foreground'>{emp.role}</div>
                         </div>
                       </div>
                     </td>
-
                     {weekDays.map((day, dayIndex) => {
-                      const employeeShifts= shifts.filter(
-                        (shift:any) => shift.employeeId === employee.id && shift.date === day.fullDate
+                      const employeeShifts = shifts?.filter(
+                        (s: any) => s.userId === emp.id && s.date === day.fullDate
                       )
-
                       return (
-                        <td key={dayIndex} className="border p-2 text-center">
-                          {employeeShifts && employeeShifts.length > 0 ? (
-                            <div className="space-y-1">
-                              {employeeShifts.map((shift: any, shiftIndex: any) => (
-                                <Badge
-                                  key={shiftIndex}
-                                  variant={
-                                    shift.shift === "morning"
-                                      ? "default"
-                                      : shift.shift === "afternoon"
-                                        ? "secondary"
-                                        : "outline"
-                                  }
-                                  className="w-full justify-center"
-                                >
-                                  {shift.shift === "morning"
-                                    ? "Morning"
-                                    : shift.shift === "afternoon"
-                                      ? "Afternoon"
-                                      : "Night"}
-                                </Badge>
-                              ))}
-                            </div>
+                        <td key={dayIndex} className='border p-2 text-center'>
+                          {employeeShifts?.length ? (
+                            employeeShifts.map((s: any, i: number) => (
+                              <Badge
+                                key={i}
+                                variant={
+                                  s.shift === 'morning'
+                                    ? 'default'
+                                    : s.shift === 'afternoon'
+                                    ? 'secondary'
+                                    : 'outline'
+                                }
+                                className='w-full justify-center'
+                              >
+                                {s.shift.charAt(0).toUpperCase() + s.shift.slice(1)}
+                              </Badge>
+                            ))
                           ) : (
-                            <div className="text-xs text-muted-foreground">Off</div>
+                            <div className='text-xs text-muted-foreground'>Off</div>
                           )}
                         </td>
                       )
@@ -252,5 +231,3 @@ const EmployeeScheduler = () => {
     </>
   )
 }
-
-export default EmployeeScheduler;
