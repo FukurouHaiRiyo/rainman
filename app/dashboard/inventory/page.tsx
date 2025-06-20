@@ -170,7 +170,7 @@ export default function InventoryOverview() {
               Add Item
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] radix-dialog-content">
             <DialogHeader>
               <DialogTitle>{isEditing ? "Edit Inventory Item" : "Add Inventory Item"}</DialogTitle>
               <DialogDescription>

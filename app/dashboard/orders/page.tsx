@@ -155,7 +155,7 @@ const OrdersOverview = () => {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className='sm:max-w-[500px]'>
+            <DialogContent className='sm:max-w-[500px] radix-dialog-content'>
               <DialogHeader>
                 <DialogTitle>{isEditing ? 'Edit Order' : 'Create Order'}</DialogTitle>
                 <DialogDescription>Completează detaliile comenzii.</DialogDescription>
@@ -199,6 +199,7 @@ const OrdersOverview = () => {
                         mode='single'
                         selected={formData.date}
                         onSelect={(date) => setFormData((prev) => ({ ...prev, date }))}
+                        className='radix-dialog-content'
                       />
                     </PopoverContent>
                   </Popover>
@@ -210,12 +211,12 @@ const OrdersOverview = () => {
                 </div>
 
                 <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='status' className='text-right'>Status</Label>
+                  <Label htmlFor='status' className='text-right radix-dialog-content'>Status</Label>
                   <Select value={formData.status} onValueChange={(v) => handleSelectChange('status', v)}>
                     <SelectTrigger className='col-span-3'>
                       <SelectValue placeholder='Select status' />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className='radix-dialog-content'>
                       <SelectItem value='pending'>Pending</SelectItem>
                       <SelectItem value='processing'>Processing</SelectItem>
                       <SelectItem value='completed'>Completed</SelectItem>

@@ -137,10 +137,10 @@ export default function OrderCalendar() {
                     Time Slot
                   </Label>
                   <Select>
-                    <SelectTrigger className='col-span-3'>
+                    <SelectTrigger className='col-span-3 radix-dialog-content'>
                       <SelectValue placeholder='Select time slot' />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className='radix-dialog-content'>
                       <SelectItem value='morning'>Morning (8:00 - 12:00)</SelectItem>
                       <SelectItem value='afternoon'>Afternoon (12:00 - 16:00)</SelectItem>
                       <SelectItem value='evening'>Evening (16:00 - 20:00)</SelectItem>

@@ -82,7 +82,7 @@ export default function EmployeeScheduler() {
             </Button>
           </DialogTrigger>
 
-          <DialogContent>
+          <DialogContent className='radix-dialog-content'>
             <DialogHeader>
               <DialogTitle>
                 Programați un nou schimb
@@ -114,7 +114,7 @@ export default function EmployeeScheduler() {
                 <Label>Tura</Label>
                 <Select value={formData.shift} onValueChange={(v) => setFormData({ ...formData, shift: v })}>
                   <SelectTrigger className='col-span-3'><SelectValue placeholder='Select shift' /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className='radix-dialog-content'>
                     <SelectItem value='morning'>Morning (6–14)</SelectItem>
                     <SelectItem value='afternoon'>Afternoon (14–22)</SelectItem>
                     <SelectItem value='night'>Night (22–6)</SelectItem>
@@ -126,7 +126,7 @@ export default function EmployeeScheduler() {
                 <Label>Rol</Label>
                 <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
                   <SelectTrigger className='col-span-3'><SelectValue placeholder='Select role' /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className='radix-dialog-content'>
                     <SelectItem value='picker'>Picker</SelectItem>
                     <SelectItem value='packer'>Packer</SelectItem>
                     <SelectItem value='loader'>Loader</SelectItem>

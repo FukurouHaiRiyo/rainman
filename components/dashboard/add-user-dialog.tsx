@@ -164,7 +164,7 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
           Add User
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[500px]'>
+      <DialogContent className='sm:max-w-[500px] radix-dialog-content'>
         <DialogHeader>
           <DialogTitle>Add New User</DialogTitle>
           <DialogDescription>
@@ -271,7 +271,7 @@ export function AddUserDialog({ onUserAdded }: AddUserDialogProps) {
                 <SelectTrigger className='col-span-3'>
                   <SelectValue placeholder='Select role' />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className='radix-dialog-content'>
                   <SelectItem value='admin'>Administrator</SelectItem>
                   <SelectItem value='manager'>Warehouse Manager</SelectItem>
                   <SelectItem value='inventory'>Inventory Specialist</SelectItem>
