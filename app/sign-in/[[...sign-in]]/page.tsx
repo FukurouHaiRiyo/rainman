@@ -1,4 +1,4 @@
-import { SignIn } from "@clerk/nextjs";
+import { SignIn } from '@clerk/nextjs';
 import './page.css';
 
 export default function SignInPage() {
@@ -12,18 +12,18 @@ export default function SignInPage() {
         />
       </div>
 
-      <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+      <div className='flex min-h-screen items-center justify-center bg-muted/40 p-4'>
         <SignIn
           appearance={{
             elements: {
-              rootBox: "mx-auto",
-              card: "shadow-lg",
+              rootBox: 'mx-auto',
+              card: 'shadow-lg',
             },
           }}
-          routing="path"
-          path="/sign-in"
-          signUpUrl="/sign-up"
-          fallbackRedirectUrl="/dashboard"
+          routing='path'
+          path='/sign-in'
+          signUpUrl='/sign-up'
+          fallbackRedirectUrl='/dashboard'
         />
       </div>
     </div>
