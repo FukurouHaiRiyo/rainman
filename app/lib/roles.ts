@@ -21,7 +21,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       view: ["all"],
       edit: ["all"],
     },
-    dashboardComponents: ["stats", "orders", "inventory", "incidents", "production"],
+    dashboardComponents: ["stats", "orders", "inventory", "incidents", "production", "drivers"],
     sidebarItems: [
       "overview",
       "inventory",

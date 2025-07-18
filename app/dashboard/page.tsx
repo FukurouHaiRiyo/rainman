@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { getRoleName } from '@/app/lib/roles'
 import { ManagerDashboard } from '@/components/manager-dashboard';
 import InventoryDashboard from '../dashboard/inventory/page';
-// import { DriverDashboard } from '@/components/dashboards/driver-dashboard'
+import { DriverDashboard } from '@/components/dashboards/driver-dashboard'
 // import { EmployeeDashboard } from '@/components/dashboards/employee-dashboard'
 // import { GuestDashboard } from '@/components/dashboards/guest-dashboard'
 import { Button } from '@/components/ui/button'
@@ -105,7 +105,7 @@ export default function DashboardPage() {
       case 'inventory':
         return <InventoryDashboard />
       case 'driver':
-        // return <DriverDashboard />
+        return <DriverDashboard />
       case 'employee':
         // return <EmployeeDashboard />
       case 'guest':
