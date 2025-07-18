@@ -129,7 +129,7 @@ const DriverDashboard = () => {
           <p className='text-muted-foreground'>Monitorizare activitate + check-in șoferi.</p>
         </div>
 
-        {role !== 'admin' && (
+        {role === 'admin' && (
           <Dialog open={open} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button>
